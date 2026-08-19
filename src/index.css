@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-tap-highlight-color: transparent; }
+  body {
+    @apply bg-paper font-body text-ink antialiased;
+    background-image: radial-gradient(#f1e6cf 1.3px, transparent 1.3px);
+    background-size: 24px 24px;
+    overscroll-behavior-y: none;
+  }
+  button { touch-action: manipulation; }
+}
+
+@keyframes confetti-burst {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(.3); opacity: 0; }
+}
+.confetti-piece { animation: confetti-burst .85s cubic-bezier(.2, .85, .35, 1) both; }

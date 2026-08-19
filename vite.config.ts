@@ -1,0 +1,33 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
+
+const BASE = process.env.NODE_ENV === 'production' ? '/mult-table-kids/' : '/';
+
+export default defineConfig({
+  base: BASE,
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['five.png', 'five-maskable.png'],
+      manifest: {
+        name: 'Таблица умножения — Учимся играя',
+        short_name: 'Таблица',
+        description: 'Учи и тренируй таблицу умножения играя 🚀',
+        lang: 'ru',
+        theme_color: '#FFF8EC',
+        background_color: '#FFF8EC',
+        display: 'standalone',
+        orientation: 'portrait',
+        start_url: BASE,
+        scope: BASE,
+        icons: [
+          { src: 'five.png', sizes: '1236x1273', type: 'image/png', purpose: 'any' },
+          { src: 'five-maskable.png', sizes: '1024x1024', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      devOptions: { enabled: true, type: 'module' },
+    }),
+  ],
+});
