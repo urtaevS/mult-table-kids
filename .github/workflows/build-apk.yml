@@ -56,7 +56,14 @@ jobs:
 
       - name: Build Debug APK
         working-directory: android
-        run: ./gradlew assembleDebug --no-daemon
+        run: |
+          ./gradlew assembleDebug --no-daemon 2>&1 | tee /tmp/gradle.log
+          EXIT=${PIPESTATUS[0]}
+          if [ "$EXIT" -ne 0 ]; then
+            echo "::error::Gradle assembleDebug failed (exit $EXIT)"
+            tail -n 50 /tmp/gradle.log | while IFS= read -r line; do echo "::error::$line"; done
+          fi
+          exit $EXIT
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
