@@ -2,7 +2,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-const BASE = process.env.NODE_ENV === 'production' ? '/mult-table-kids/' : '/';
+// Relative base works both on GitHub Pages subpath (/mult-table-kids/)
+// and inside the Capacitor Android APK (served from https://localhost/ root).
+// An absolute "/mult-table-kids/" base would 404 inside the APK → white screen.
+const BASE = process.env.NODE_ENV === 'production' ? './' : '/';
 
 export default defineConfig({
   base: BASE,

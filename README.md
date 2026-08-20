@@ -44,8 +44,11 @@ npm run preview    # предпросмотр собранной версии
 
 ## 🤖 Android (APK)
 
-Готовый `.apk` для установки на телефон — в **Releases**:
-👉 https://github.com/urtaevS/mult-table-kids/releases/latest
+Готовый `.apk` для установки на телефон скачивай в **Releases**:
+
+[![Скачать APK для Android](https://img.shields.io/badge/🤖_Скачать_APK-для_Android-53b1ff?style=for-the-badge&logo=android&logoColor=white)](https://github.com/urtaevS/mult-table-kids/releases/latest)
+
+Скачай файл и разреши установку из неизвестных источников на телефоне. 🤖
 
 
 ## 🛠 Технологии
