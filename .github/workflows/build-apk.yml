@@ -44,6 +44,13 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Install Android SDK packages
+        run: |
+          SDK_CMD="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          [ -x "$SDK_CMD" ] || SDK_CMD="$ANDROID_SDK_ROOT/cmdline-tools/bin/sdkmanager"
+          yes | "$SDK_CMD" --licenses >/dev/null
+          "$SDK_CMD" "platforms;android-36" "build-tools;36.0.0"
+
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
