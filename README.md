@@ -31,9 +31,20 @@ npm run build      # собирает в папку dist/
 npm run preview    # предпросмотр собранной версии
 ```
 
+## 🤖 Android (APK)
+
+Приложение собирается в нативный `.apk` прямо в GitHub Actions:
+при каждом пуше в `main` (и по тегу `v*`) запускается сборка debug‑APK,
+а готовый файл появляется в **артекфактах** запуска Actions — его можно
+скачать и установить на устройство для теста.
+
+```bash
+npm run android:build   # собрать веб-часть и синхронизировать с Android-проектом
+```
+
 ## 🛠 Технологии
 
-React · TypeScript · Vite · Tailwind CSS · vite-plugin-pwa
+React · TypeScript · Vite · Tailwind CSS · vite-plugin-pwa · Capacitor
 
 ---
 
