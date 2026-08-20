@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-apk:
@@ -59,15 +59,31 @@ jobs:
         run: |
           ./gradlew assembleDebug --no-daemon 2>&1 | tee /tmp/gradle.log
           EXIT=${PIPESTATUS[0]}
-          if [ "$EXIT" -ne 0 ]; then
-            echo "::error::Gradle assembleDebug failed (exit $EXIT)"
-            tail -n 50 /tmp/gradle.log | while IFS= read -r line; do echo "::error::$line"; done
-          fi
+          echo "GRADLE_EXIT=$EXIT" >> "$GITHUB_ENV"
           exit $EXIT
 
       - name: Upload Debug APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+
+      - name: Surface Gradle error
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let log = '';
+            try { log = fs.readFileSync('/tmp/gradle.log', 'utf8'); } catch (e) { log = 'Gradle log not found: ' + e.message; }
+            const lines = log.split('\n');
+            const tail = lines.slice(-150).join('\n');
+            const body = '### ❌ Gradle `assembleDebug` failed (exit ' + process.env.GRADLE_EXIT + ')\n\n```\n' + tail + '\n```';
+            await github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: body
+            });
