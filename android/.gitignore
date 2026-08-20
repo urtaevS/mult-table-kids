@@ -90,12 +90,14 @@ lint/tmp/
 *.hprof
 
 # Cordova plugins for Capacitor
-capacitor-cordova-android-plugins
+# NOTE: committed on purpose so the Gradle project configures in CI without `cap sync`
+# capacitor-cordova-android-plugins
 
-# Copied web assets
+# Copied web assets (refreshed at build time by the CI copy step)
 app/src/main/assets/public
 
 # Generated Config files
-app/src/main/assets/capacitor.config.json
-app/src/main/assets/capacitor.plugins.json
+# NOTE: committed on purpose so the native runtime has them in CI
+# app/src/main/assets/capacitor.config.json
+# app/src/main/assets/capacitor.plugins.json
 app/src/main/res/xml/config.xml
