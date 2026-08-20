@@ -32,6 +32,7 @@ jobs:
       - name: Copy web build into Android assets
         run: |
           rm -rf android/app/src/main/assets/public
+          mkdir -p android/app/src/main/assets/public
           cp -r dist/. android/app/src/main/assets/public/
 
       - name: Set up JDK 17
