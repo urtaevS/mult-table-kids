@@ -15,7 +15,18 @@
 
 Готовая версия уже живёт здесь: **https://urtaevs.github.io/mult-table-kids/**
 
-## 🚀 Быстрый старт
+## � Скриншоты (мобильный вид)
+
+<div align="center">
+  <img src="screenshots/mobile-home.png" width="200" alt="Экран «Главная»"/>
+  <img src="screenshots/mobile-learn.png" width="200" alt="Экран «Учить»"/>
+  <img src="screenshots/mobile-train.png" width="200" alt="Экран «Тренировка»"/>
+  <img src="screenshots/mobile-results.png" width="200" alt="Экран «Результаты»"/>
+</div>
+
+<p align="center"><sub>Главная · Учить · Тренировка · Результаты</sub></p>
+
+## �🚀 Быстрый старт
 
 ```bash
 npm install
