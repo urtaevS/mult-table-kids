@@ -11,7 +11,7 @@ import TrainScreen from './screens/TrainScreen';
 import type { Screen } from './types';
 
 export default function App() {
-  const { progress, recordAnswer, markStudied, finishTest, toast } = useProgress();
+  const { progress, recordAnswer, markStudied, finishTest, resetProgress, toast } = useProgress();
   const [screen, setScreen] = useState<Screen>({ name: 'home' });
 
   const go = (s: Screen) => {
@@ -45,7 +45,7 @@ export default function App() {
     case 'table':   view = <TableScreen n={screen.table} go={go} markStudied={markStudied} />; break;
     case 'train':   view = <TrainScreen progress={progress} table={screen.table} recordAnswer={recordAnswer} go={go} />; break;
     case 'test':    view = <TestScreen recordAnswer={recordAnswer} finishTest={finishTest} go={go} />; break;
-    case 'results': view = <ResultsScreen progress={progress} go={go} />; break;
+    case 'results': view = <ResultsScreen progress={progress} go={go} resetProgress={resetProgress} />; break;
   }
 
   return (

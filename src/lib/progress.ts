@@ -1,3 +1,4 @@
+import { Preferences } from '@capacitor/preferences';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Progress } from '../types';
 import { ACHIEVEMENTS } from './achievements';
@@ -20,6 +21,29 @@ export function loadProgress(): Progress {
   return DEFAULT;
 }
 
+async function loadStoredProgress(): Promise<Progress> {
+  try {
+    const { value } = await Preferences.get({ key: KEY });
+    if (value) return { ...DEFAULT, ...(JSON.parse(value) as Partial<Progress>) };
+  } catch { /* ignore */ }
+  // миграция со старого localStorage → Preferences
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const parsed = { ...DEFAULT, ...(JSON.parse(raw) as Partial<Progress>) };
+      try { await Preferences.set({ key: KEY, value: JSON.stringify(parsed) }); } catch { /* ignore */ }
+      return parsed;
+    }
+  } catch { /* ignore */ }
+  return DEFAULT;
+}
+
+async function persistProgress(p: Progress): Promise<void> {
+  const raw = JSON.stringify(p);
+  try { await Preferences.set({ key: KEY, value: raw }); } catch { /* ignore */ }
+  try { localStorage.setItem(KEY, raw); } catch { /* ignore */ }
+}
+
 export function isMastered(p: Progress, table: number): boolean {
   const s = p.tableStats[table];
   return !!s && s.total >= 6 && s.correct / s.total >= 0.8;
@@ -30,13 +54,27 @@ export function masteryCount(p: Progress): number {
 }
 
 export function useProgress() {
-  const [progress, setProgress] = useState<Progress>(loadProgress);
+  const [progress, setProgress] = useState<Progress>(DEFAULT);
+  const loaded = useRef(false);
   const [toast, setToast] = useState<string | null>(null);
-  // achievements already earned — used to detect *newly* unlocked ones
-  const seen = useRef<Set<string>>(new Set(loadProgress().achievements));
+  const seen = useRef<Set<string>>(new Set());
 
+  // загрузка из системного хранилища (Preferences → localStorage миграция)
   useEffect(() => {
-    try { localStorage.setItem(KEY, JSON.stringify(progress)); } catch { /* ignore */ }
+    let cancelled = false;
+    loadStoredProgress().then(p => {
+      if (cancelled) return;
+      setProgress(p);
+      seen.current = new Set(p.achievements);
+      loaded.current = true;
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  // сохранение на телефон (Preferences + localStorage как fallback)
+  useEffect(() => {
+    if (!loaded.current) return;
+    void persistProgress(progress);
   }, [progress]);
 
   // Detect newly unlocked achievements whenever progress changes.
@@ -92,5 +130,10 @@ export function useProgress() {
     }));
   }, []);
 
-  return { progress, recordAnswer, markStudied, finishTest, toast };
+  const resetProgress = useCallback(() => {
+    seen.current = new Set();
+    setProgress({ ...DEFAULT });
+  }, []);
+
+  return { progress, recordAnswer, markStudied, finishTest, resetProgress, toast };
 }

@@ -16,7 +16,7 @@ function StatCard({ emoji, label, value }: { emoji: string; label: string; value
   );
 }
 
-export default function ResultsScreen({ progress, go }: { progress: Progress; go: (s: Screen) => void }) {
+export default function ResultsScreen({ progress, go, resetProgress }: { progress: Progress; go: (s: Screen) => void; resetProgress?: () => void }) {
   const mastered = masteryCount(progress);
   const acc = progress.answersTotal ? Math.round((progress.answersCorrect / progress.answersTotal) * 100) : null;
 
@@ -79,6 +79,16 @@ export default function ResultsScreen({ progress, go }: { progress: Progress; go
           🚀 Тренироваться дальше
         </BigButton>
       )}
+
+      <button
+        type="button"
+        onClick={() => {
+          if (window.confirm('Сбросить весь прогресс? Это нельзя отменить.')) resetProgress?.();
+        }}
+        className="mx-auto mt-4 block rounded-full px-3 py-1.5 text-xs font-extrabold text-[#917ea8] underline decoration-dotted underline-offset-4 opacity-70 hover:opacity-100"
+      >
+        🗑️ Сбросить прогресс
+      </button>
     </main>
   );
 }
