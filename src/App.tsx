@@ -3,6 +3,7 @@ import BottomNav, { type NavKey } from './components/BottomNav';
 import { initSounds, playBg } from './lib/sounds';
 import Decor from './components/Decor';
 import { useProgress } from './lib/progress';
+import ArithmeticScreen from './screens/ArithmeticScreen';
 import HomeScreen from './screens/HomeScreen';
 import LearnScreen from './screens/LearnScreen';
 import ResultsScreen from './screens/ResultsScreen';
@@ -14,7 +15,7 @@ import UpdateBanner from './components/UpdateBanner';
 import type { Screen } from './types';
 
 export default function App() {
-  const { progress, recordAnswer, markStudied, finishTest, finishTimeAttack, resetProgress, toast } = useProgress();
+  const { progress, recordAnswer, recordArithmetic, markStudied, finishTest, finishTimeAttack, resetProgress, toast } = useProgress();
   const [screen, setScreen] = useState<Screen>({ name: 'home' });
 
   // тихий фон после первого взаимодействия (требование браузеров)
@@ -48,6 +49,7 @@ export default function App() {
       : screen.name === 'learn' || screen.name === 'table' ? 'learn'
       : screen.name === 'train' ? 'train'
       : screen.name === 'time-attack' ? 'train'
+      : screen.name === 'arithmetic' ? 'train'
       : screen.name === 'results' ? 'results'
       : null;
 
@@ -55,6 +57,7 @@ export default function App() {
     screen.name === 'table' ? `table-${screen.table}`
       : screen.name === 'train' ? `train-${screen.table ?? 'mix'}`
       : screen.name === 'time-attack' ? `ta-${screen.difficulty ?? 'pick'}`
+      : screen.name === 'arithmetic' ? `arith-${screen.op ?? 'pick'}`
       : screen.name;
 
   let view: ReactNode = null;
@@ -65,6 +68,7 @@ export default function App() {
     case 'train':   view = <TrainScreen progress={progress} table={screen.table} recordAnswer={recordAnswer} go={go} />; break;
     case 'test':    view = <TestScreen recordAnswer={recordAnswer} finishTest={finishTest} go={go} />; break;
     case 'time-attack': view = <TimeAttackScreen difficulty={screen.difficulty} recordAnswer={recordAnswer} finishTimeAttack={finishTimeAttack} go={go} />; break;
+    case 'arithmetic': view = <ArithmeticScreen op={screen.op} recordAnswer={recordAnswer} recordArithmetic={recordArithmetic} go={go} />; break;
     case 'results': view = <ResultsScreen progress={progress} go={go} resetProgress={resetProgress} />; break;
   }
 

@@ -1,5 +1,7 @@
 export type TimeDifficulty = 'easy' | 'medium' | 'hard';
 
+export type ArithmeticOp = 'add' | 'sub' | 'mix';
+
 export type Screen =
   | { name: 'home' }
   | { name: 'learn' }
@@ -7,6 +9,7 @@ export type Screen =
   | { name: 'train'; table?: number }
   | { name: 'test' }
   | { name: 'time-attack'; difficulty?: TimeDifficulty }
+  | { name: 'arithmetic'; op?: ArithmeticOp }
   | { name: 'results' };
 
 export interface TableStat { correct: number; total: number }
@@ -23,4 +26,5 @@ export interface Progress {
   lastTest: number | null;
   achievements: string[];
   bestTimeAttack: Partial<Record<TimeDifficulty, number>>;
+  arithmetic: Record<ArithmeticOp, TableStat>;
 }

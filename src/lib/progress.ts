@@ -13,6 +13,7 @@ const DEFAULT: Progress = {
   studied: [], tableStats: {},
   bestTest: 0, lastTest: null, achievements: [],
   bestTimeAttack: {},
+  arithmetic: { add: { correct: 0, total: 0 }, sub: { correct: 0, total: 0 }, mix: { correct: 0, total: 0 } },
 };
 
 export function loadProgress(): Progress {
@@ -24,17 +25,21 @@ export function loadProgress(): Progress {
 }
 
 async function loadStoredProgress(): Promise<Progress> {
+  const merge = (raw: string | null): Progress | null => {
+    if (!raw) return null;
+    try { return { ...DEFAULT, ...(JSON.parse(raw) as Partial<Progress>), arithmetic: { ...DEFAULT.arithmetic, ...(JSON.parse(raw) as Partial<Progress>).arithmetic } } as Progress; } catch { return null; }
+  };
   try {
     const { value } = await Preferences.get({ key: KEY });
-    if (value) return { ...DEFAULT, ...(JSON.parse(value) as Partial<Progress>) };
+    const p = merge(value);
+    if (p) return p;
   } catch { /* ignore */ }
-  // миграция со старого localStorage → Preferences
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) {
-      const parsed = { ...DEFAULT, ...(JSON.parse(raw) as Partial<Progress>) };
-      try { await Preferences.set({ key: KEY, value: JSON.stringify(parsed) }); } catch { /* ignore */ }
-      return parsed;
+    const p = merge(raw);
+    if (p) {
+      try { await Preferences.set({ key: KEY, value: JSON.stringify(p) }); } catch { /* ignore */ }
+      return p;
     }
   } catch { /* ignore */ }
   return DEFAULT;
@@ -144,10 +149,20 @@ export function useProgress() {
     });
   }, []);
 
+  const recordArithmetic = useCallback((op: import('../types').ArithmeticOp, correct: boolean) => {
+    setProgress(prev => {
+      const s = prev.arithmetic[op] ?? { correct: 0, total: 0 };
+      return {
+        ...prev,
+        arithmetic: { ...prev.arithmetic, [op]: { correct: s.correct + (correct ? 1 : 0), total: s.total + 1 } },
+      };
+    });
+  }, []);
+
   const resetProgress = useCallback(() => {
     seen.current = new Set();
     setProgress({ ...DEFAULT });
   }, []);
 
-  return { progress, recordAnswer, markStudied, finishTest, finishTimeAttack, resetProgress, toast };
+  return { progress, recordAnswer, recordArithmetic, markStudied, finishTest, finishTimeAttack, resetProgress, toast };
 }

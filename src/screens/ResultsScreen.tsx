@@ -110,14 +110,38 @@ export default function ResultsScreen({ progress, go, resetProgress }: { progres
         })}
       </div>
 
-      <div className="mt-6 grid grid-cols-3 gap-2.5">
-        {(['easy','medium','hard'] as const).map(d => (
-          <div key={d} className="rounded-2xl bg-white p-3 text-center shadow-[0_3px_0_#f0e7d6]">
-            <div className="text-[11px] font-extrabold text-[#8d84a3]">{d === 'easy' ? 'Легко' : d === 'medium' ? 'Средне' : 'Сложно'}</div>
-            <div className="font-display text-lg font-bold">{progress.bestTimeAttack[d] ?? 0}</div>
-            <div className="text-[11px] font-bold text-[#8d84a3]">рекорд</div>
-          </div>
-        ))}
+      <div className="mt-2.5 grid grid-cols-3 gap-2">
+        <div className="rounded-2xl bg-white p-3 text-center shadow-[0_3px_0_#f0e7d6]">
+          <div className="text-[11px] font-extrabold text-[#8d84a3]">Легко</div>
+          <div className="font-display text-lg font-bold">{progress.bestTimeAttack.easy ?? 0}</div>
+          <div className="text-[11px] font-bold text-[#8d84a3]">рекорд</div>
+        </div>
+        <div className="rounded-2xl bg-white p-3 text-center shadow-[0_3px_0_#f0e7d6]">
+          <div className="text-[11px] font-extrabold text-[#8d84a3]">Средне</div>
+          <div className="font-display text-lg font-bold">{progress.bestTimeAttack.medium ?? 0}</div>
+          <div className="text-[11px] font-bold text-[#8d84a3]">рекорд</div>
+        </div>
+        <div className="rounded-2xl bg-white p-3 text-center shadow-[0_3px_0_#f0e7d6]">
+          <div className="text-[11px] font-extrabold text-[#8d84a3]">Сложно</div>
+          <div className="font-display text-lg font-bold">{progress.bestTimeAttack.hard ?? 0}</div>
+          <div className="text-[11px] font-bold text-[#8d84a3]">рекорд</div>
+        </div>
+      </div>
+      <p className="mt-1.5 text-center text-xs font-extrabold text-[#8d84a3]">⏱️ На время</p>
+
+      <h2 className="mt-4 font-display text-base font-bold">Сложение / вычитание</h2>
+      <div className="mt-2 grid grid-cols-3 gap-2">
+        {(['add','sub','mix'] as const).map(k => {
+          const s = progress.arithmetic?.[k];
+          const label = k === 'add' ? '➕ Сложение' : k === 'sub' ? '➖ Вычитание' : '🔀 Микс';
+          return (
+            <div key={k} className="rounded-2xl bg-white p-3 text-center shadow-[0_3px_0_#f0e7d6]">
+              <div className="text-[11px] font-extrabold text-[#8d84a3]">{label}</div>
+              <div className="font-display text-lg font-bold">{s ? `${s.correct}/${s.total}` : '0/0'}</div>
+              <div className="text-[11px] font-bold text-[#8d84a3]">верно/всего</div>
+            </div>
+          );
+        })}
       </div>
 
       {mastered < 9 && (

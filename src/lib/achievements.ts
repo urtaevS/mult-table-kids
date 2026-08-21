@@ -21,4 +21,8 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: 'time10',    emoji: '⚡', title: 'Спринтер',         desc: '10 верных на время',        check: p => (p.bestTimeAttack.easy ?? 0) >= 10 || (p.bestTimeAttack.medium ?? 0) >= 10 || (p.bestTimeAttack.hard ?? 0) >= 10 },
   { id: 'time_easy', emoji: '🌿', title: 'Лёгкий темп',      desc: '8+ на лёгком уровне',       check: p => (p.bestTimeAttack.easy ?? 0) >= 8 },
   { id: 'time_hard', emoji: '🔥', title: 'Хардкор',          desc: '8+ на сложном уровне',      check: p => (p.bestTimeAttack.hard ?? 0) >= 8 },
+  // Арифметика до 100
+  { id: 'arith10',   emoji: '➕', title: 'Сложение — старт',  desc: '10 верных ➕',            check: p => (p.arithmetic?.add.correct ?? 0) >= 10 },
+  { id: 'arith_sub', emoji: '➖', title: 'Вычитание — старт', desc: '10 верных ➖',            check: p => (p.arithmetic?.sub.correct ?? 0) >= 10 },
+  { id: 'arith_mix', emoji: '🧮', title: 'Микс 20',           desc: '20 верных вперемешку',    check: p => (p.arithmetic?.mix.correct ?? 0) >= 20 },
 ];
