@@ -6,7 +6,7 @@ import Mascot from '../components/Mascot';
 import ProgressBar from '../components/ProgressBar';
 import { makeQuestion, type Question } from '../lib/quiz';
 import { OPT_STYLES } from '../lib/styles';
-import { playCorrect, playWrong } from '../lib/sounds';
+import { playCorrect, playTick, playWrong } from '../lib/sounds';
 import type { Screen, TimeDifficulty } from '../types';
 
 const DIFFS: { id: TimeDifficulty; label: string; desc: string; secs: number; color: string }[] = [
@@ -59,6 +59,7 @@ export default function TimeAttackScreen({ difficulty, recordAnswer, finishTimeA
 
   useEffect(() => {
     if (phase !== 'play') return;
+    if (secs > 0 && secs <= 10) playTick();
     if (secs === 0) {
       window.clearInterval(tickRef.current);
       window.clearTimeout(timerRef.current);

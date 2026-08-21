@@ -87,6 +87,10 @@ export function playWrong() {
   setTimeout(() => tone(90, 120, 'square', 0.18), 260);
 }
 
+export function playTick() {
+  tone(1200, 70, 'sine', 0.09);
+}
+
 export function playAchievement() {
   [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => tone(f, 260, 'sine', 0.18), i * 95));
 }
