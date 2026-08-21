@@ -37,19 +37,40 @@ export default function HomeScreen({ progress, go }: { progress: Progress; go: (
 
       <header className="mt-4 text-center">
         <h1 className="font-display text-[26px] font-bold leading-tight">
-          Математика — <span className="text-coral">играя</span>
+          Учимся <span className="text-coral">играя</span>
         </h1>
-        <p className="mt-1.5 text-base font-extrabold text-[#8d84a3]">Учимся играя 🚀</p>
       </header>
 
       <div className="mt-6 space-y-3">
-        {ACTIONS.map((a, i) => (
+        {ACTIONS.slice(0, 3).map((a, i) => (
           <BigButton
             key={a.label}
             color={a.color}
             onClick={() => go(a.to)}
             className="animate-pop-in flex h-16 w-full items-center gap-3 px-4 text-xl"
             style={{ animationDelay: `${i * 60}ms` }}
+          >
+            <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/35 text-2xl">{a.emoji}</span>
+            {a.label}
+            <ChevronRight className="ml-auto opacity-70" size={26} strokeWidth={3} />
+          </BigButton>
+        ))}
+      </div>
+
+      <div className="my-5 flex items-center gap-3">
+        <div className="h-px flex-1 bg-[#ece3d2]" />
+        <span className="rounded-full bg-white px-3 py-1 text-[11px] font-extrabold tracking-widest text-[#b8a9c8]">ДРУГИЕ ИГРЫ</span>
+        <div className="h-px flex-1 bg-[#ece3d2]" />
+      </div>
+
+      <div className="space-y-3">
+        {ACTIONS.slice(3).map((a, i) => (
+          <BigButton
+            key={a.label}
+            color={a.color}
+            onClick={() => go(a.to)}
+            className="animate-pop-in flex h-16 w-full items-center gap-3 px-4 text-xl"
+            style={{ animationDelay: `${(i + 3) * 60}ms` }}
           >
             <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/35 text-2xl">{a.emoji}</span>
             {a.label}
