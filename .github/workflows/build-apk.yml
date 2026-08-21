@@ -54,13 +54,30 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
+      - name: Derive version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          # v1.0.3 -> 1.0.3 ; code = major*10000 + minor*100 + patch (monotonic)
+          VER="${TAG#v}"
+          IFS='.' read -r MA MI PA <<< "$VER"
+          CODE=$(( ${MA:-0}*10000 + ${MI:-0}*100 + ${PA:-0} ))
+          [ "$CODE" -eq 0 ] && CODE=4
+          echo "VERSION_NAME=$VER" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=$CODE" >> "$GITHUB_ENV"
+          echo "Derived $VER -> code $CODE"
+
       - name: Build Debug APK
         working-directory: android
         env:
           JAVA_HOME: ${{ env.JAVA_HOME }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           echo "JAVA_HOME=$JAVA_HOME"; java -version
-          ./gradlew assembleDebug --no-daemon 2>&1 | tee /tmp/gradle.log
+          ./gradlew assembleDebug -PversionCode=${VERSION_CODE:-4} -PversionName=${VERSION_NAME:-1.0.3} --no-daemon 2>&1 | tee /tmp/gradle.log
           EXIT=${PIPESTATUS[0]}
           echo "GRADLE_EXIT=$EXIT" >> "$GITHUB_ENV"
           exit $EXIT

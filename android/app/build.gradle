@@ -7,8 +7,8 @@ android {
         applicationId "com.akira.multtable"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode (project.hasProperty('versionCode') ? project.property('versionCode').toInteger() : 4)
+        versionName (project.hasProperty('versionName') ? project.property('versionName').toString() : "1.0.3")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,10 +16,38 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            def ksFile = file('release.keystore')
+            def ksB64 = System.getenv('ANDROID_KEYSTORE_BASE64')
+            def ksPath = System.getenv('KEYSTORE_PATH')
+            if (ksB64 && !ksFile.exists()) {
+                def decoded = ksB64.replaceAll("\\s", "").decodeBase64()
+                ksFile.bytes = decoded
+            } else if (ksPath) {
+                ksFile = file(ksPath)
+            }
+            if (ksFile.exists()) {
+                storeFile ksFile
+                storePassword System.getenv('KEYSTORE_PASSWORD') ?: 'multtable123'
+                keyAlias System.getenv('KEY_ALIAS') ?: 'release'
+                keyPassword System.getenv('KEY_PASSWORD') ?: 'multtable123'
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            if (project.hasProperty('signingConfigs') && signingConfigs.hasProperty('release')) {
+                def ksFile = file('release.keystore')
+                def ksB64 = System.getenv('ANDROID_KEYSTORE_BASE64')
+                if ((ksFile.exists() || ksB64) && System.getenv('KEYSTORE_PASSWORD')) {
+                    signingConfig signingConfigs.release
+                }
+            }
         }
     }
 }
