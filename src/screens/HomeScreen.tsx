@@ -17,6 +17,7 @@ const ACTIONS: { emoji: string; label: string; color: ChunkyColor; to: Screen }[
   { emoji: '🎯', label: 'Тренироваться',   color: 'mint',  to: { name: 'train' } },
   { emoji: '⏱️', label: 'На время',        color: 'coral', to: { name: 'time-attack' } },
   { emoji: '🧮', label: 'Сложение/вычитание', color: 'grape', to: { name: 'arithmetic', op: 'mix' } },
+  { emoji: '❓', label: 'Пропущенная цифра', color: 'sky', to: { name: 'missing', op: 'mix' } },
   { emoji: '⚡', label: 'Быстрый тест',    color: 'sun',   to: { name: 'test' } },
   { emoji: '🏆', label: 'Мои результаты',  color: 'candy', to: { name: 'results' } },
 ];

@@ -25,4 +25,8 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: 'arith10',   emoji: '➕', title: 'Сложение — старт',  desc: '10 верных ➕',            check: p => (p.arithmetic?.add.correct ?? 0) >= 10 },
   { id: 'arith_sub', emoji: '➖', title: 'Вычитание — старт', desc: '10 верных ➖',            check: p => (p.arithmetic?.sub.correct ?? 0) >= 10 },
   { id: 'arith_mix', emoji: '🧮', title: 'Микс 20',           desc: '20 верных вперемешку',    check: p => (p.arithmetic?.mix.correct ?? 0) >= 20 },
+  // Пропущенная цифра
+  { id: 'miss5',     emoji: '❓', title: 'Наблюдатель',      desc: '5 верных с пропуском',    check: p => Object.values(p.missing ?? {}).some(s => (s.correct ?? 0) >= 5) },
+  { id: 'miss_mix',  emoji: '🔀', title: 'Микс-пропуск',     desc: '10 верных вперемешку',    check: p => (p.missing?.mix.correct ?? 0) >= 10 },
+  { id: 'miss_mul',  emoji: '✖️', title: 'Пропуск ×',        desc: '10 верных × с пропуском', check: p => (p.missing?.mul.correct ?? 0) >= 10 },
 ];
