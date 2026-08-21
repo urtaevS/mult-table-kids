@@ -135,6 +135,7 @@ export default function ResultsScreen({ progress, go, resetProgress }: { progres
       >
         🗑️ Сбросить прогресс
       </button>
+      <p className="mt-1.5 text-center text-[11px] font-extrabold tracking-widest text-[#b8a9c8] opacity-80">v{__APP_VERSION__}</p>
     </main>
   );
 }

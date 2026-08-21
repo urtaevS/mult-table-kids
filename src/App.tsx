@@ -10,6 +10,7 @@ import TableScreen from './screens/TableScreen';
 import TestScreen from './screens/TestScreen';
 import TimeAttackScreen from './screens/TimeAttackScreen';
 import TrainScreen from './screens/TrainScreen';
+import UpdateBanner from './components/UpdateBanner';
 import type { Screen } from './types';
 
 export default function App() {
@@ -72,6 +73,7 @@ export default function App() {
       <Decor />
       <div key={screenKey} className="animate-screen-in">{view}</div>
       <BottomNav active={active} onNavigate={onNavigate} />
+      <UpdateBanner current={`v${__APP_VERSION__}`} />
       {toast && (
         <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
           <div className="animate-toast rounded-full bg-ink px-5 py-2.5 font-extrabold text-white shadow-xl">
