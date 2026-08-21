@@ -18,8 +18,9 @@ const ACTIONS: { emoji: string; label: string; color: ChunkyColor; to: Screen }[
   { emoji: '⏱️', label: 'На время',        color: 'coral', to: { name: 'time-attack' } },
   { emoji: '🧮', label: 'Сложение/вычитание', color: 'grape', to: { name: 'arithmetic', op: 'mix' } },
   { emoji: '❓', label: 'Пропущенная цифра', color: 'sky', to: { name: 'missing', op: 'mix' } },
+  { emoji: '🔢', label: 'Ряд чисел',       color: 'candy', to: { name: 'sequence', kind: 'next' } },
   { emoji: '⚡', label: 'Быстрый тест',    color: 'sun',   to: { name: 'test' } },
-  { emoji: '🏆', label: 'Мои результаты',  color: 'candy', to: { name: 'results' } },
+  { emoji: '🏆', label: 'Мои результаты',  color: 'grape', to: { name: 'results' } },
 ];
 
 export default function HomeScreen({ progress, go }: { progress: Progress; go: (s: Screen) => void }) {

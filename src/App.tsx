@@ -6,6 +6,7 @@ import { useProgress } from './lib/progress';
 import ArithmeticScreen from './screens/ArithmeticScreen';
 import HomeScreen from './screens/HomeScreen';
 import MissingScreen from './screens/MissingScreen';
+import SequenceScreen from './screens/SequenceScreen';
 import LearnScreen from './screens/LearnScreen';
 import ResultsScreen from './screens/ResultsScreen';
 import TableScreen from './screens/TableScreen';
@@ -16,7 +17,7 @@ import UpdateBanner from './components/UpdateBanner';
 import type { Screen } from './types';
 
 export default function App() {
-  const { progress, recordAnswer, recordArithmetic, recordMissing, markStudied, finishTest, finishTimeAttack, resetProgress, toast } = useProgress();
+  const { progress, recordAnswer, recordArithmetic, recordMissing, recordSequence, markStudied, finishTest, finishTimeAttack, resetProgress, toast } = useProgress();
   const [screen, setScreen] = useState<Screen>({ name: 'home' });
 
   // тихий фон после первого взаимодействия (требование браузеров)
@@ -52,6 +53,7 @@ export default function App() {
       : screen.name === 'time-attack' ? 'train'
       : screen.name === 'arithmetic' ? 'train'
       : screen.name === 'missing' ? 'train'
+      : screen.name === 'sequence' ? 'train'
       : screen.name === 'results' ? 'results'
       : null;
 
@@ -61,6 +63,7 @@ export default function App() {
       : screen.name === 'time-attack' ? `ta-${screen.difficulty ?? 'pick'}`
       : screen.name === 'arithmetic' ? `arith-${screen.op ?? 'pick'}`
       : screen.name === 'missing' ? `miss-${screen.op ?? 'pick'}`
+      : screen.name === 'sequence' ? `seq-${screen.kind ?? 'pick'}`
       : screen.name;
 
   let view: ReactNode = null;
@@ -73,6 +76,7 @@ export default function App() {
     case 'time-attack': view = <TimeAttackScreen difficulty={screen.difficulty} recordAnswer={recordAnswer} finishTimeAttack={finishTimeAttack} go={go} />; break;
     case 'arithmetic': view = <ArithmeticScreen op={screen.op} recordAnswer={recordAnswer} recordArithmetic={recordArithmetic} go={go} />; break;
     case 'missing': view = <MissingScreen op={screen.op} recordAnswer={recordAnswer} recordMissing={recordMissing} go={go} />; break;
+    case 'sequence': view = <SequenceScreen kind={screen.kind} recordAnswer={recordAnswer} recordSequence={recordSequence} go={go} />; break;
     case 'results': view = <ResultsScreen progress={progress} go={go} resetProgress={resetProgress} />; break;
   }
 

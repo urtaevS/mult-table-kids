@@ -159,6 +159,21 @@ export default function ResultsScreen({ progress, go, resetProgress }: { progres
         })}
       </div>
 
+      <h2 className="mt-4 font-display text-base font-bold">Последовательность</h2>
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        {(['next','odd'] as const).map(k => {
+          const s = progress.sequence?.[k];
+          const label = k === 'next' ? '➡️ Следующее' : '🚫 Лишнее';
+          return (
+            <div key={k} className="rounded-2xl bg-white p-3 text-center shadow-[0_3px_0_#f0e7d6]">
+              <div className="text-[11px] font-extrabold text-[#8d84a3]">{label}</div>
+              <div className="font-display text-lg font-bold">{s ? `${s.correct}/${s.total}` : '0/0'}</div>
+              <div className="text-[11px] font-bold text-[#8d84a3]">верно/всего</div>
+            </div>
+          );
+        })}
+      </div>
+
       {mastered < 9 && (
         <BigButton color="mint" className="mt-6 h-14 w-full text-lg" onClick={() => go({ name: 'train' })}>
           🚀 Тренироваться дальше

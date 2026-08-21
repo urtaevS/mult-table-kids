@@ -15,6 +15,7 @@ const DEFAULT: Progress = {
   bestTimeAttack: {},
   arithmetic: { add: { correct: 0, total: 0 }, sub: { correct: 0, total: 0 }, mix: { correct: 0, total: 0 } },
   missing: { mul: { correct: 0, total: 0 }, div: { correct: 0, total: 0 }, add: { correct: 0, total: 0 }, sub: { correct: 0, total: 0 }, mix: { correct: 0, total: 0 } },
+  sequence: { next: { correct: 0, total: 0 }, odd: { correct: 0, total: 0 } },
 };
 
 export function loadProgress(): Progress {
@@ -30,7 +31,7 @@ async function loadStoredProgress(): Promise<Progress> {
     if (!raw) return null;
     try {
       const par = JSON.parse(raw) as Partial<Progress>;
-      return { ...DEFAULT, ...par, arithmetic: { ...DEFAULT.arithmetic, ...par.arithmetic }, missing: { ...DEFAULT.missing, ...par.missing } } as Progress;
+      return { ...DEFAULT, ...par, arithmetic: { ...DEFAULT.arithmetic, ...par.arithmetic }, missing: { ...DEFAULT.missing, ...par.missing }, sequence: { ...DEFAULT.sequence, ...par.sequence } } as Progress;
     } catch { return null; }
   };
   try {
@@ -170,10 +171,17 @@ export function useProgress() {
     });
   }, []);
 
+  const recordSequence = useCallback((kind: import('../types').SequenceKind, correct: boolean) => {
+    setProgress(prev => {
+      const s = prev.sequence[kind] ?? { correct: 0, total: 0 };
+      return { ...prev, sequence: { ...prev.sequence, [kind]: { correct: s.correct + (correct ? 1 : 0), total: s.total + 1 } } };
+    });
+  }, []);
+
   const resetProgress = useCallback(() => {
     seen.current = new Set();
     setProgress({ ...DEFAULT });
   }, []);
 
-  return { progress, recordAnswer, recordArithmetic, recordMissing, markStudied, finishTest, finishTimeAttack, resetProgress, toast };
+  return { progress, recordAnswer, recordArithmetic, recordMissing, recordSequence, markStudied, finishTest, finishTimeAttack, resetProgress, toast };
 }

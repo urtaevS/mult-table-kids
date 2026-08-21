@@ -29,4 +29,8 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: 'miss5',     emoji: '❓', title: 'Наблюдатель',      desc: '5 верных с пропуском',    check: p => Object.values(p.missing ?? {}).some(s => (s.correct ?? 0) >= 5) },
   { id: 'miss_mix',  emoji: '🔀', title: 'Микс-пропуск',     desc: '10 верных вперемешку',    check: p => (p.missing?.mix.correct ?? 0) >= 10 },
   { id: 'miss_mul',  emoji: '✖️', title: 'Пропуск ×',        desc: '10 верных × с пропуском', check: p => (p.missing?.mul.correct ?? 0) >= 10 },
+  // Последовательности
+  { id: 'seq_next',  emoji: '🔢', title: 'Продолжи ряд',     desc: '10 верных «следующее»', check: p => (p.sequence?.next.correct ?? 0) >= 10 },
+  { id: 'seq_odd',   emoji: '🚫', title: 'Найди лишнее',     desc: '5 верных «лишнее»',      check: p => (p.sequence?.odd.correct ?? 0) >= 5 },
+  { id: 'seq_mix',   emoji: '🧩', title: 'Закономерность',   desc: '15 верных всего',        check: p => ((p.sequence?.next.correct ?? 0) + (p.sequence?.odd.correct ?? 0)) >= 15 },
 ];
