@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Таблица умножения</string>
-    <string name="title_activity_main">Таблица умножения</string>
+    <string name="app_name">Математика — играя</string>
+    <string name="title_activity_main">Математика — играя</string>
     <string name="package_name">com.akira.multtable</string>
     <string name="custom_url_scheme">com.akira.multtable</string>
 </resources>

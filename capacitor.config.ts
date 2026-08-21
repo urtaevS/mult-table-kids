@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.akira.multtable',
-  appName: 'Таблица умножения',
+  appName: 'Математика — играя',
   webDir: 'dist'
 };
 

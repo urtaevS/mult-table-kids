@@ -34,7 +34,7 @@ export default function HomeScreen({ progress, go }: { progress: Progress; go: (
 
       <header className="mt-4 text-center">
         <h1 className="font-display text-[26px] font-bold leading-tight">
-          Таблица <span className="text-coral">умножения</span>
+          Математика — <span className="text-coral">играя</span>
         </h1>
         <p className="mt-1.5 text-base font-extrabold text-[#8d84a3]">Учимся играя 🚀</p>
       </header>

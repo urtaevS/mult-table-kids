@@ -16,9 +16,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['five.png', 'five-maskable.png'],
       manifest: {
-        name: 'Таблица умножения — Учимся играя',
-        short_name: 'Таблица',
-        description: 'Учи и тренируй таблицу умножения играя 🚀',
+        name: 'Математика — играя',
+        short_name: 'Математика',
+        description: 'Учи математику играя — умножение, сложение и игры 🚀',
         lang: 'ru',
         theme_color: '#FFF8EC',
         background_color: '#FFF8EC',
