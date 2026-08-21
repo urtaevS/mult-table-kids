@@ -15,6 +15,7 @@ const GREETINGS = [
 const ACTIONS: { emoji: string; label: string; color: ChunkyColor; to: Screen }[] = [
   { emoji: '📚', label: 'Учить',           color: 'sky',   to: { name: 'learn' } },
   { emoji: '🎯', label: 'Тренироваться',   color: 'mint',  to: { name: 'train' } },
+  { emoji: '⏱️', label: 'На время',        color: 'coral', to: { name: 'time-attack' } },
   { emoji: '⚡', label: 'Быстрый тест',    color: 'sun',   to: { name: 'test' } },
   { emoji: '🏆', label: 'Мои результаты',  color: 'grape', to: { name: 'results' } },
 ];

@@ -110,6 +110,16 @@ export default function ResultsScreen({ progress, go, resetProgress }: { progres
         })}
       </div>
 
+      <div className="mt-6 grid grid-cols-3 gap-2.5">
+        {(['easy','medium','hard'] as const).map(d => (
+          <div key={d} className="rounded-2xl bg-white p-3 text-center shadow-[0_3px_0_#f0e7d6]">
+            <div className="text-[11px] font-extrabold text-[#8d84a3]">{d === 'easy' ? 'Легко' : d === 'medium' ? 'Средне' : 'Сложно'}</div>
+            <div className="font-display text-lg font-bold">{progress.bestTimeAttack[d] ?? 0}</div>
+            <div className="text-[11px] font-bold text-[#8d84a3]">рекорд</div>
+          </div>
+        ))}
+      </div>
+
       {mastered < 9 && (
         <BigButton color="mint" className="mt-6 h-14 w-full text-lg" onClick={() => go({ name: 'train' })}>
           🚀 Тренироваться дальше

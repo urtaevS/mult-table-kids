@@ -12,6 +12,7 @@ const DEFAULT: Progress = {
   answersCorrect: 0, answersTotal: 0,
   studied: [], tableStats: {},
   bestTest: 0, lastTest: null, achievements: [],
+  bestTimeAttack: {},
 };
 
 export function loadProgress(): Progress {
@@ -132,10 +133,21 @@ export function useProgress() {
     }));
   }, []);
 
+  const finishTimeAttack = useCallback((difficulty: import('../types').TimeDifficulty, score: number) => {
+    setProgress(prev => {
+      const best = prev.bestTimeAttack[difficulty] ?? 0;
+      return {
+        ...prev,
+        stars: prev.stars + score,
+        bestTimeAttack: { ...prev.bestTimeAttack, [difficulty]: Math.max(best, score) },
+      };
+    });
+  }, []);
+
   const resetProgress = useCallback(() => {
     seen.current = new Set();
     setProgress({ ...DEFAULT });
   }, []);
 
-  return { progress, recordAnswer, markStudied, finishTest, resetProgress, toast };
+  return { progress, recordAnswer, markStudied, finishTest, finishTimeAttack, resetProgress, toast };
 }

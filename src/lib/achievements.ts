@@ -16,4 +16,9 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: 'test8',    emoji: '🎯', title: 'Почти идеально',   desc: 'Набрать 8+ в тесте',        check: p => p.bestTest >= 8 },
   { id: 'test10',   emoji: '🏆', title: 'Идеальный тест',   desc: '10 из 10 в тесте',          check: p => p.bestTest >= 10 },
   { id: 'all',      emoji: '👑', title: 'Мастер умножения', desc: 'Выучить все таблицы',       check: (_, m) => m >= 9 },
+  // На время
+  { id: 'time5',     emoji: '⏱️', title: 'Быстрый старт',     desc: '5 верных на время',         check: p => (p.bestTimeAttack.easy ?? 0) >= 5 || (p.bestTimeAttack.medium ?? 0) >= 5 || (p.bestTimeAttack.hard ?? 0) >= 5 },
+  { id: 'time10',    emoji: '⚡', title: 'Спринтер',         desc: '10 верных на время',        check: p => (p.bestTimeAttack.easy ?? 0) >= 10 || (p.bestTimeAttack.medium ?? 0) >= 10 || (p.bestTimeAttack.hard ?? 0) >= 10 },
+  { id: 'time_easy', emoji: '🌿', title: 'Лёгкий темп',      desc: '8+ на лёгком уровне',       check: p => (p.bestTimeAttack.easy ?? 0) >= 8 },
+  { id: 'time_hard', emoji: '🔥', title: 'Хардкор',          desc: '8+ на сложном уровне',      check: p => (p.bestTimeAttack.hard ?? 0) >= 8 },
 ];
