@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import BigButton from '../components/BigButton';
 import Mascot from '../components/Mascot';
 import { ACHIEVEMENTS } from '../lib/achievements';
 import { isMastered, masteryCount } from '../lib/progress';
+import { initSounds, playBg, setMuted, stopBg } from '../lib/sounds';
 import { TABLES } from '../lib/tables';
 import { plural } from '../lib/utils';
 import type { Progress, Screen } from '../types';
@@ -19,12 +21,29 @@ function StatCard({ emoji, label, value }: { emoji: string; label: string; value
 export default function ResultsScreen({ progress, go, resetProgress }: { progress: Progress; go: (s: Screen) => void; resetProgress?: () => void }) {
   const mastered = masteryCount(progress);
   const acc = progress.answersTotal ? Math.round((progress.answersCorrect / progress.answersTotal) * 100) : null;
+  const [soundOn, setSoundOn] = useState(true);
+  useEffect(() => { void initSounds().then(v => setSoundOn(v)); }, []);
+  const toggleSound = async () => {
+    const next = !soundOn;
+    setSoundOn(next);
+    await setMuted(!next);
+    if (next) playBg(); else stopBg();
+  };
 
   return (
     <main className="relative z-10 mx-auto max-w-md px-4 pb-32 pt-5">
       <header className="text-center">
         <h1 className="font-display text-2xl font-bold">Мои результаты</h1>
       </header>
+      <div className="mt-3 flex justify-center">
+        <button
+          type="button"
+          onClick={toggleSound}
+          className="rounded-full bg-white px-4 py-1.5 text-xs font-extrabold shadow-[0_3px_0_#f0e7d6] active:translate-y-0.5"
+        >
+          {soundOn ? '🔊 Звук вкл' : '🔇 Звук выкл'}
+        </button>
+      </div>
 
       <div className="mt-4 flex justify-center">
         <Mascot emoji="🤖" message={mastered === 9 ? 'Ты настоящий чемпион! 👑' : 'Отличный прогресс! Так держать! ✨'} />

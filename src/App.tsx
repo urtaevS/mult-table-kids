@@ -1,5 +1,6 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import BottomNav, { type NavKey } from './components/BottomNav';
+import { initSounds, playBg } from './lib/sounds';
 import Decor from './components/Decor';
 import { useProgress } from './lib/progress';
 import HomeScreen from './screens/HomeScreen';
@@ -13,6 +14,20 @@ import type { Screen } from './types';
 export default function App() {
   const { progress, recordAnswer, markStudied, finishTest, resetProgress, toast } = useProgress();
   const [screen, setScreen] = useState<Screen>({ name: 'home' });
+
+  // тихий фон после первого взаимодействия (требование браузеров)
+  useEffect(() => {
+    let started = false;
+    const kick = () => {
+      if (started) return; started = true;
+      void initSounds().then(on => { if (on) playBg(); });
+      window.removeEventListener('pointerdown', kick);
+      window.removeEventListener('keydown', kick);
+    };
+    window.addEventListener('pointerdown', kick, { once: true });
+    window.addEventListener('keydown', kick, { once: true });
+    return () => { window.removeEventListener('pointerdown', kick); window.removeEventListener('keydown', kick); };
+  }, []);
 
   const go = (s: Screen) => {
     setScreen(s);

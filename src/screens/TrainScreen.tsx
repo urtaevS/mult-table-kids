@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { playCorrect, playWrong } from '../lib/sounds';
 import BigButton from '../components/BigButton';
 import Confetti from '../components/Confetti';
 import Mascot from '../components/Mascot';
@@ -37,6 +38,7 @@ export default function TrainScreen({ progress, table, recordAnswer, go }: Props
     if (phase !== 'ask') return;
     const ok = opt === q.answer;
     recordAnswer(q.a, ok);
+    if (ok) { playCorrect(); } else { playWrong(); }
     if (ok) {
       setPhase('correct'); setBurst(b => b + 1); setSessionStars(s => s + 1);
       setMsg(PRAISE[Math.floor(Math.random() * PRAISE.length)]);

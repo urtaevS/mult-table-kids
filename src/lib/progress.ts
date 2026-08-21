@@ -1,5 +1,6 @@
 import { Preferences } from '@capacitor/preferences';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { playAchievement } from './sounds';
 import type { Progress } from '../types';
 import { ACHIEVEMENTS } from './achievements';
 
@@ -84,6 +85,7 @@ export function useProgress() {
     if (fresh.length === 0) return;
     fresh.forEach(a => seen.current.add(a.id));
     setToast(`${fresh[0].emoji} ${fresh[0].title}`);
+    playAchievement();
     setProgress(prev =>
       prev.achievements.includes(fresh[0].id)
         ? prev

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, RotateCcw, Star } from 'lucide-react';
+import { playCorrect, playWrong } from '../lib/sounds';
 import BigButton from '../components/BigButton';
 import Confetti from '../components/Confetti';
 import ProgressBar from '../components/ProgressBar';
@@ -41,6 +42,7 @@ export default function TestScreen({ recordAnswer, finishTest, go }: Props) {
     const q = qs[idx];
     const ok = opt === q.answer;
     recordAnswer(q.a, ok, false);
+    if (ok) playCorrect(); else playWrong();
     setPicked(opt);
     setFb(ok ? 'correct' : 'wrong');
     const newScore = score + (ok ? 1 : 0);
