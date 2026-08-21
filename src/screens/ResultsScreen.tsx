@@ -39,9 +39,26 @@ export default function ResultsScreen({ progress, go, resetProgress }: { progres
         <button
           type="button"
           onClick={toggleSound}
-          className="rounded-full bg-white px-4 py-1.5 text-xs font-extrabold shadow-[0_3px_0_#f0e7d6] active:translate-y-0.5"
+          aria-label={soundOn ? 'Выключить звук' : 'Включить звук'}
+          aria-pressed={soundOn}
+          className={`inline-flex items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-extrabold shadow-[0_4px_0_#ece3d2] transition-all active:translate-y-0.5 active:shadow-none ${
+            soundOn
+              ? 'border-[#e3d6b8] bg-sun-soft text-[#7a5a00]'
+              : 'border-[#ede3cc] bg-white text-[#8d84a3]'
+          }`}
         >
-          {soundOn ? '🔊 Звук вкл' : '🔇 Звук выкл'}
+          <span
+            className={`grid h-7 w-7 place-items-center rounded-full text-[15px] shadow-sm ${
+              soundOn ? 'bg-sun text-white' : 'bg-[#f3ece0] text-[#b8a88a]'
+            }`}
+          >
+            {soundOn ? '🔊' : '🔇'}
+          </span>
+          <span>{soundOn ? 'Звук вкл' : 'Звук выкл'}</span>
+          <span
+            className={`ml-1 h-2 w-2 rounded-full ${soundOn ? 'bg-mint' : 'bg-[#d8cbb0]'}`}
+            aria-hidden
+          />
         </button>
       </div>
 
