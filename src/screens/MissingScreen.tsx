@@ -3,6 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import BigButton from '../components/BigButton';
 import Confetti from '../components/Confetti';
 import Mascot from '../components/Mascot';
+import { explainSequence } from '../lib/sequence';
 import { OPT_STYLES } from '../lib/styles';
 import { makeMissingQuestion, type MissingQuestion } from '../lib/missing';
 import { playCorrect, playWrong } from '../lib/sounds';
@@ -30,14 +31,21 @@ export default function MissingScreen({ op, recordAnswer, recordMissing, go }: P
   const start=(o:MissingOp)=>{ setCur(o); const qq=makeMissingQuestion(o); setQ(qq); setFb('ask'); setPicked(null); };
   useEffect(()=>{ if(op && !cur) start(op); },[op]);
 
+  const [explain, setExplain] = useState<string|null>(null);
   const answer=(opt:number)=>{
     if(fb!=='ask'||!q||!cur) return;
     const ok=opt===q.answer;
     recordAnswer(2, ok); recordMissing(cur, ok);
-    if(ok){ playCorrect(); setBurst(b=>b+1);} else playWrong();
+    if(ok){ playCorrect(); setBurst(b=>b+1); } else playWrong();
     setPicked(opt); setFb(ok?'ok':'bad');
-    timer.current=window.setTimeout(()=>{ setQ(makeMissingQuestion(cur,q)); setFb('ask'); setPicked(null); }, ok?700:1100);
+    setExplain(ok ? `Верно!` : null);
+    if (ok) {
+      timer.current=window.setTimeout(()=>{ setQ(makeMissingQuestion(cur,q)); setFb('ask'); setPicked(null); setExplain(null); }, 1300);
+      return;
+    }
+    // неверный — только «Попробовать ещё», без подсказки и без автоперехода
   };
+  const next=()=>{ if(!cur||!q) return; setQ(makeMissingQuestion(cur,q)); setFb('ask'); setPicked(null); setExplain(null); };
 
   if(!cur || !q){
     return (
@@ -78,12 +86,23 @@ export default function MissingScreen({ op, recordAnswer, recordMissing, go }: P
         {q.options.map((opt,i)=>{
           let cls=OPT_STYLES[i];
           if(fb==='ok') cls=opt===q.answer?'bg-mint text-white shadow-[0_6px_0_#22a76b] scale-[1.04]':`${OPT_STYLES[i]} opacity-40`;
-          else if(fb==='bad'){ if(opt===q.answer) cls='bg-mint text-white shadow-[0_6px_0_#22a76b]'; else if(opt===picked) cls='animate-shake bg-[#ffe8d1] text-[#c07a2a] shadow-[0_6px_0_#f2d5b2]'; else cls=`${OPT_STYLES[i]} opacity-40`; }
+          else if(fb==='bad'){ if(opt===picked) cls='animate-shake bg-[#ffe8d1] text-[#c07a2a] shadow-[0_6px_0_#f2d5b2]'; else cls=`${OPT_STYLES[i]} opacity-40`; }
           return <button key={i} type="button" onClick={()=>answer(opt)} disabled={fb!=='ask'} className={`h-[68px] rounded-3xl text-[26px] font-extrabold transition-all duration-150 active:translate-y-1 ${cls}`}>{opt}</button>;
         })}
       </div>
+      {fb==='ok' && explain && (
+        <div className="animate-pop-in mt-4 rounded-blob bg-white p-4 text-center shadow-[0_6px_0_#f0e7d6]">
+          <p className="text-sm font-extrabold text-mint-dark">{explain}</p>
+        </div>
+      )}
+      {fb==='bad' && (
+        <div className="animate-pop-in mt-4 rounded-blob bg-white p-4 text-center shadow-[0_6px_0_#f0e7d6]">
+          <p className="text-sm font-extrabold text-[#c07a2a]">Неверно — попробуй ещё!</p>
+          <BigButton color="sun" className="mt-3 h-12 w-full" onClick={next}>Попробовать ещё</BigButton>
+        </div>
+      )}
       <div className="mt-6 flex justify-center">
-        <Mascot emoji={fb==='ok'?'🥳':fb==='bad'?'🤗':'❓'} message={fb==='ok'?'Верно!':fb==='bad'?`Ответ: ${q.answer}`:'Найди пропуск!'} />
+        <Mascot emoji={fb==='ok'?'🥳':fb==='bad'?'🤗':'❓'} message={fb==='ok'?'Верно!':fb==='bad'?'Подумай ещё': 'Найди пропуск!'} />
       </div>
     </main>
   );
