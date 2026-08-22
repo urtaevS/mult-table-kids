@@ -34,7 +34,7 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
       // требуется подтверждение — не автопереход
       return;
     }
-    timer.current=window.setTimeout(()=>{ setQ(makeSequenceQuestion(cur,q)); setFb('ask'); setPicked(null); setExplain(null); }, 1700);
+    // нужен клик «Попробовать ещё» — автоперехода нет
   };
   const next = () => { if(!cur||!q) return; setQ(makeSequenceQuestion(cur,q)); setFb('ask'); setPicked(null); setExplain(null); };
 
@@ -85,7 +85,7 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
         {q.options.map((opt,i)=>{
           let cls=OPT_STYLES[i];
           if(fb==='ok') cls=opt===q.answer?'bg-mint text-white shadow-[0_6px_0_#22a76b] scale-[1.04]':`${OPT_STYLES[i]} opacity-40`;
-          else if(fb==='bad'){ if(opt===q.answer) cls='bg-mint text-white shadow-[0_6px_0_#22a76b]'; else if(opt===picked) cls='animate-shake bg-[#ffe8d1] text-[#c07a2a] shadow-[0_6px_0_#f2d5b2]'; else cls=`${OPT_STYLES[i]} opacity-40`; }
+          else if(fb==='bad'){ if(opt===picked) cls='animate-shake bg-[#ffe8d1] text-[#c07a2a] shadow-[0_6px_0_#f2d5b2]'; else cls=`${OPT_STYLES[i]} opacity-40`; }
           return <button key={i} type="button" onClick={()=>answer(opt)} disabled={fb!=='ask'} className={`h-[68px] rounded-3xl text-[26px] font-extrabold transition-all duration-150 active:translate-y-1 ${cls}`}>{opt}</button>;
         })}
       </div>
