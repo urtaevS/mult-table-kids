@@ -13,7 +13,7 @@ const OPS: { id: MissingOp; label: string; desc: string }[] = [
   { id: 'div', label: 'Деление', desc: '÷' },
   { id: 'add', label: 'Сложение', desc: '+' },
   { id: 'sub', label: 'Вычитание', desc: '−' },
-  { id: 'mix', label: 'Вперемешку', desc: 'mix' },
+  { id: 'mix', label: 'Вперемешку', desc: '×÷+−' },
 ];
 
 interface Props { op?: MissingOp; recordAnswer: (t:number,c:boolean)=>void; recordMissing: (o:MissingOp,c:boolean)=>void; go:(s:Screen)=>void; }

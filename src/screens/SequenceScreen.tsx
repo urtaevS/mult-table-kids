@@ -47,8 +47,16 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
           ))}
         </div>
         <div className="mt-3 grid grid-cols-2 gap-3">
-          <button type="button" onClick={()=>start('gap' as SequenceKind)} className="rounded-3xl bg-grape-soft px-3 py-3 text-center font-extrabold text-[#5b3da8] shadow-[0_4px_0_#d9ccf4] active:translate-y-0.5">❓ Пропущенное<br/><span className="text-xs opacity-70">2, 4, ?, 8</span></button>
-          <button type="button" onClick={()=>start('mix' as SequenceKind)} className="rounded-3xl bg-sun-soft px-3 py-3 text-center font-extrabold text-[#7a5a00] shadow-[0_4px_0_#efe0b4] active:translate-y-0.5">🔀 Вперемешку<br/><span className="text-xs opacity-70">все виды</span></button>
+          <button type="button" onClick={()=>start('gap' as SequenceKind)} className="flex flex-col items-center gap-1 rounded-3xl bg-white px-3 py-5 text-center font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-grape-soft text-lg">❓</span>
+            <span className="text-sm">Пропущенное</span>
+            <span className="text-xs text-[#8d84a3]">2, 4, ?, 8</span>
+          </button>
+          <button type="button" onClick={()=>start('mix' as SequenceKind)} className="flex flex-col items-center gap-1 rounded-3xl bg-white px-3 py-5 text-center font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-sun-soft text-lg">🔀</span>
+            <span className="text-sm">Вперемешку</span>
+            <span className="text-xs text-[#8d84a3]">все виды</span>
+          </button>
         </div>
       </main>
     );
