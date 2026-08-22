@@ -44,26 +44,14 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
         <button type="button" onClick={()=>go({name:'home'})} className="grid h-12 w-12 place-items-center rounded-2xl bg-white shadow-[0_4px_0_#ece3d2] active:translate-y-0.5"><ArrowLeft size={24} strokeWidth={2.8}/></button>
         <h1 className="mt-4 font-display text-2xl font-bold">🔢 Последовательность</h1>
         <p className="mt-1 text-sm font-extrabold text-[#8d84a3]">Продолжи ряд или найди лишнее</p>
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          {([{id:'next',label:'Следующее',emoji:'➡️',desc:'2, 4, 6, ?'}, {id:'odd',label:'Лишнее',emoji:'🚫',desc:'3, 6, 7, 9'}] as const).map(o=>(
-            <button key={o.id} type="button" onClick={()=>start(o.id as SequenceKind)} className="flex flex-col items-center gap-1 rounded-3xl bg-white px-3 py-5 text-center font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
-              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-grape-soft text-lg">{o.emoji}</span>
-              <span className="text-sm">{o.label}</span>
-              <span className="text-xs text-[#8d84a3]">{o.desc}</span>
+        <div className="mt-5 space-y-3">
+          {([{id:'next',label:'Следующее',emoji:'➡️',desc:'2, 4, 6, ?', bg:'bg-grape-soft'}, {id:'odd',label:'Лишнее',emoji:'🚫',desc:'3, 6, 7, 9', bg:'bg-grape-soft'}, {id:'gap',label:'Пропущенное',emoji:'❓',desc:'2, 4, ?, 8', bg:'bg-grape-soft'}, {id:'mix',label:'Вперемешку',emoji:'🔀',desc:'все виды', bg:'bg-sun-soft'}] as const).map(o=>(
+            <button key={o.id} type="button" onClick={()=>start(o.id as SequenceKind)} className="flex w-full items-center gap-3 rounded-3xl bg-white px-4 py-4 text-left font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
+              <span className={`grid h-11 w-11 place-items-center rounded-2xl text-xl ${o.bg}`}>{o.emoji}</span>
+              <span className="flex-1"><span className="block text-[15px] leading-none">{o.label}</span><span className="block text-xs font-bold text-[#8d84a3]">{o.desc}</span></span>
+              <span className="rounded-full bg-ink px-3 py-1.5 text-xs text-white">Играть →</span>
             </button>
           ))}
-        </div>
-        <div className="mt-3 grid grid-cols-2 gap-3">
-          <button type="button" onClick={()=>start('gap' as SequenceKind)} className="flex flex-col items-center gap-1 rounded-3xl bg-white px-3 py-5 text-center font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-grape-soft text-lg">❓</span>
-            <span className="text-sm">Пропущенное</span>
-            <span className="text-xs text-[#8d84a3]">2, 4, ?, 8</span>
-          </button>
-          <button type="button" onClick={()=>start('mix' as SequenceKind)} className="flex flex-col items-center gap-1 rounded-3xl bg-white px-3 py-5 text-center font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-sun-soft text-lg">🔀</span>
-            <span className="text-sm">Вперемешку</span>
-            <span className="text-xs text-[#8d84a3]">все виды</span>
-          </button>
         </div>
       </main>
     );

@@ -53,9 +53,9 @@ export default function MissingScreen({ op, recordAnswer, recordMissing, go }: P
         <button type="button" onClick={()=>go({name:'home'})} className="grid h-12 w-12 place-items-center rounded-2xl bg-white shadow-[0_4px_0_#ece3d2] active:translate-y-0.5"><ArrowLeft size={24} strokeWidth={2.8}/></button>
         <h1 className="mt-4 font-display text-2xl font-bold">❓ Пропуск</h1>
         <p className="mt-1 text-sm font-extrabold text-[#8d84a3]">Вставь пропущенную цифру</p>
-        <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="mt-5 space-y-3">
           {OPS.map(o=>(
-            <button key={o.id} type="button" onClick={()=>start(o.id)} className="flex flex-col items-center gap-1 rounded-3xl bg-white px-3 py-4 text-center font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
+            <button key={o.id} type="button" onClick={()=>start(o.id)} className="flex w-full items-center gap-3 rounded-3xl bg-white px-4 py-4 text-left font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
               {o.id === 'mix' ? (
                 <span className="grid h-10 w-10 grid-cols-2 place-items-center gap-0 rounded-2xl bg-candy-soft text-[13px] font-black leading-none text-ink">
                   <span>×</span><span>÷</span><span>+</span><span>−</span>
@@ -63,7 +63,8 @@ export default function MissingScreen({ op, recordAnswer, recordMissing, go }: P
               ) : (
                 <span className="grid h-10 w-10 place-items-center rounded-2xl bg-candy-soft text-lg">{o.desc}</span>
               )}
-              <span className="text-sm leading-none">{o.label}</span>
+              <span className="flex-1"><span className="block text-[15px] leading-none">{o.label}</span><span className="block text-xs font-bold text-[#8d84a3]">{o.desc === '×÷+−' ? 'все операции' : o.desc}</span></span>
+              <span className="rounded-full bg-ink px-3 py-1.5 text-xs text-white">Играть →</span>
             </button>
           ))}
         </div>

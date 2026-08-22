@@ -41,7 +41,7 @@ export default function ArithmeticScreen({ op, recordAnswer, recordArithmetic, g
     return (
       <main className="relative z-10 mx-auto max-w-md px-4 pb-32 pt-8">
         <button type="button" onClick={() => go({ name: 'home' })} className="grid h-12 w-12 place-items-center rounded-2xl bg-white shadow-[0_4px_0_#ece3d2] active:translate-y-0.5"><ArrowLeft size={24} strokeWidth={2.8} /></button>
-        <h1 className="mt-4 font-display text-2xl font-bold">➕➖ До 100</h1>
+        <h1 className="mt-4 font-display text-2xl font-bold">Сложение/Вычитание</h1>
         <p className="mt-1 text-sm font-extrabold text-[#8d84a3]">Выбери режим</p>
         <div className="mt-5 space-y-3">
           {OPS.map(o => (
