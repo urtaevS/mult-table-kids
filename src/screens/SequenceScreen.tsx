@@ -46,6 +46,10 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
             </button>
           ))}
         </div>
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <button type="button" onClick={()=>start('gap' as SequenceKind)} className="rounded-3xl bg-grape-soft px-3 py-3 text-center font-extrabold text-[#5b3da8] shadow-[0_4px_0_#d9ccf4] active:translate-y-0.5">❓ Пропущенное<br/><span className="text-xs opacity-70">2, 4, ?, 8</span></button>
+          <button type="button" onClick={()=>start('mix' as SequenceKind)} className="rounded-3xl bg-sun-soft px-3 py-3 text-center font-extrabold text-[#7a5a00] shadow-[0_4px_0_#efe0b4] active:translate-y-0.5">🔀 Вперемешку<br/><span className="text-xs opacity-70">все виды</span></button>
+        </div>
       </main>
     );
   }

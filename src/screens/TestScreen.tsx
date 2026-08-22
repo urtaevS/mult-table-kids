@@ -9,9 +9,37 @@ import { OPT_STYLES } from '../lib/styles';
 import { rnd, shuffle } from '../lib/utils';
 import type { Screen } from '../types';
 
-function buildTest(): Question[] {
-  const tables = shuffle([...Array.from({ length: 9 }, (_, i) => i + 2), rnd(2, 10)]);
-  return tables.map(t => makeQuestion(t));
+import { makeArithmeticQuestion } from '../lib/arithmetic';
+import { makeMissingQuestion } from '../lib/missing';
+import { makeSequenceQuestion } from '../lib/sequence';
+
+type MixedQ = { display: string; answer: number; options: number[]; kind: 'mul' | 'arith' | 'miss' | 'seq' };
+
+function buildTest(): MixedQ[] {
+  const qs: MixedQ[] = [];
+  // 4 × умножения (ядро)
+  const tables = shuffle([...Array.from({ length: 9 }, (_, i) => i + 2), rnd(2, 10)]).slice(0, 4);
+  tables.forEach(t => {
+    const q = makeQuestion(t);
+    qs.push({ display: `${q.a} × ${q.b} = ?`, answer: q.answer, options: q.options, kind: 'mul' });
+  });
+  // 2 арифметика до 100
+  for (let i = 0; i < 2; i++) {
+    const q = makeArithmeticQuestion(Math.random() < 0.5 ? 'add' : 'sub');
+    const txt = q.text; // "a + b = ?"
+    qs.push({ display: txt, answer: q.answer, options: q.options, kind: 'arith' });
+  }
+  // 2 пропущенные
+  for (let i = 0; i < 2; i++) {
+    const q = makeMissingQuestion('mix');
+    qs.push({ display: q.text, answer: q.answer, options: q.options, kind: 'miss' });
+  }
+  // 2 последовательности
+  for (let i = 0; i < 2; i++) {
+    const q = makeSequenceQuestion(i % 2 === 0 ? 'next' : 'odd');
+    qs.push({ display: q.display, answer: q.answer, options: q.options, kind: 'seq' });
+  }
+  return shuffle(qs);
 }
 
 interface Props {
@@ -22,7 +50,7 @@ interface Props {
 
 export default function TestScreen({ recordAnswer, finishTest, go }: Props) {
   const [phase, setPhase] = useState<'intro' | 'quiz' | 'done'>('intro');
-  const [qs, setQs] = useState<Question[]>([]);
+  const [qs, setQs] = useState<MixedQ[]>([]);
   const [idx, setIdx] = useState(0);
   const [score, setScore] = useState(0);
   const [fb, setFb] = useState<'ask' | 'correct' | 'wrong'>('ask');
@@ -41,7 +69,7 @@ export default function TestScreen({ recordAnswer, finishTest, go }: Props) {
     if (fb !== 'ask' || !qs[idx]) return;
     const q = qs[idx];
     const ok = opt === q.answer;
-    recordAnswer(q.a, ok, false);
+    recordAnswer(q.kind === 'mul' ? parseInt(q.display) || 2 : 2, ok, false);
     if (ok) playCorrect(); else playWrong();
     setPicked(opt);
     setFb(ok ? 'correct' : 'wrong');
@@ -59,7 +87,7 @@ export default function TestScreen({ recordAnswer, finishTest, go }: Props) {
         <div className="animate-float text-7xl">🧑‍🚀</div>
         <h1 className="mt-4 font-display text-2xl font-bold">Быстрый тест</h1>
         <p className="mt-2 text-lg font-extrabold text-[#8d84a3]">
-          10 вопросов из всех таблиц.<br />За каждый верный ответ — ⭐!
+          10 вопросов — умножение, счёт до 100, пропуски и ряды.<br />За каждый верный ответ — ⭐!
         </p>
         <BigButton color="sun" className="mt-8 h-16 w-full text-xl" onClick={start}>🚀 Начать!</BigButton>
         <button type="button" onClick={() => go({ name: 'home' })} className="mt-3 h-12 w-full rounded-2xl font-extrabold text-[#8d84a3]">
@@ -128,8 +156,8 @@ export default function TestScreen({ recordAnswer, finishTest, go }: Props) {
       </div>
 
       <div className="relative mt-5 rounded-blob bg-white p-7 text-center shadow-[0_6px_0_#f0e7d6]">
-        <div className="font-display text-[42px] font-bold leading-none">
-          {q.a} × {q.b} = {fb === 'ask' ? '?' : <span className={fb === 'correct' ? 'text-mint-dark' : 'text-[#c07a2a]'}>{q.answer}</span>}
+        <div className="font-display text-[30px] font-bold leading-tight">
+          {fb === 'ask' ? q.display.replace(' = ?', ' = ?').replace(',', ',') : <span className={fb === 'correct' ? 'text-mint-dark' : 'text-[#c07a2a]'}>{q.display.replace('?', String(q.answer))}</span>}
         </div>
         {fb === 'correct' && (
           <div className="pointer-events-none absolute inset-0 grid place-items-center">
@@ -139,7 +167,7 @@ export default function TestScreen({ recordAnswer, finishTest, go }: Props) {
         <Confetti burst={burst} />
       </div>
       {fb === 'wrong' && (
-        <p className="mt-3 text-center font-extrabold text-[#c07a2a]">Запомни: {q.a} × {q.b} = {q.answer} 🙂</p>
+        <p className="mt-3 text-center font-extrabold text-[#c07a2a]">Ответ: {q.answer} 🙂</p>
       )}
 
       <div className="mt-5 grid grid-cols-2 gap-3">

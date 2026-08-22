@@ -41,8 +41,27 @@ function makeOddOne(): { items: number[]; odd: number; rule: string } {
 }
 
 export function makeSequenceQuestion(kind: SequenceKind, last?: SequenceQuestion): SequenceQuestion {
-  let k: SequenceKind = kind;
-  // kind is passed explicitly; for mix not used here (Screen has kind)
+  // hidden kinds: 'gap' (2,4,?,8) and 'mix' (random next/odd/gap) — used via extra buttons
+  let k: SequenceKind = kind as SequenceKind;
+  if ((k as string) === 'mix') k = (['next','odd'] as SequenceKind[])[rnd(0,1)] as SequenceKind;
+  if ((k as string) === 'gap') {
+    // 2, 4, ?, 8  — missing middle
+    const type = rnd(0,1);
+    if (type === 0) {
+      const step = rnd(2,4), start = rnd(1,10);
+      const seq = Array.from({length:4}, (_,i)=> start + i*step);
+      const idx = rnd(1,2); // hide 1 or 2
+      const ans = seq[idx];
+      const display = seq.map((v,i)=> i===idx?'?':String(v)).join(', ');
+      const wrongs = new Set<number>();
+      for(const d of shuffle([1,-1,2,-2])){ if(wrongs.size===3) break; const c=ans+d; if(c>0&&c!==ans) wrongs.add(c); }
+      while(wrongs.size<3){ const c=ans+rnd(-8,8); if(c>0&&c!==ans) wrongs.add(c); }
+      if(last && last.display===display) return makeSequenceQuestion('gap' as SequenceKind, undefined);
+      return { display, answer: ans, options: shuffle([ans, ...wrongs]), hint: 'Вставь пропущенное' };
+    } else {
+      return makeSequenceQuestion('next', last);
+    }
+  }
   if (k === 'next') {
     const t = rnd(0, 2);
     const { seq, next } = progression(t);

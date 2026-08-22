@@ -13,7 +13,7 @@ const OPS: { id: MissingOp; label: string; desc: string }[] = [
   { id: 'div', label: 'Деление', desc: '÷' },
   { id: 'add', label: 'Сложение', desc: '+' },
   { id: 'sub', label: 'Вычитание', desc: '−' },
-  { id: 'mix', label: 'Вперемешку', desc: '×÷+−' },
+  { id: 'mix', label: 'Вперемешку', desc: 'mix' },
 ];
 
 interface Props { op?: MissingOp; recordAnswer: (t:number,c:boolean)=>void; recordMissing: (o:MissingOp,c:boolean)=>void; go:(s:Screen)=>void; }
@@ -48,7 +48,13 @@ export default function MissingScreen({ op, recordAnswer, recordMissing, go }: P
         <div className="mt-5 grid grid-cols-2 gap-3">
           {OPS.map(o=>(
             <button key={o.id} type="button" onClick={()=>start(o.id)} className="flex flex-col items-center gap-1 rounded-3xl bg-white px-3 py-4 text-center font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
-              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-candy-soft text-lg">{o.desc}</span>
+              {o.id === 'mix' ? (
+                <span className="grid h-10 w-10 grid-cols-2 place-items-center gap-0 rounded-2xl bg-candy-soft text-[13px] font-black leading-none text-[#c74e7d]">
+                  <span>×</span><span>÷</span><span>+</span><span>−</span>
+                </span>
+              ) : (
+                <span className="grid h-10 w-10 place-items-center rounded-2xl bg-candy-soft text-lg">{o.desc}</span>
+              )}
               <span className="text-sm leading-none">{o.label}</span>
             </button>
           ))}

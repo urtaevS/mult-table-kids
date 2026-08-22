@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import { useEffect, useState } from 'react';
 
 const LATEST_URL = 'https://api.github.com/repos/urtaevS/mult-table-kids/releases/latest';
@@ -14,6 +15,7 @@ export default function UpdateBanner({ current }: { current: string }) {
   const [latest, setLatest] = useState<{ tag: string; url: string } | null>(null);
 
   useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
     let cancelled = false;
     (async () => {
       try {
