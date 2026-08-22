@@ -34,7 +34,7 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
       // требуется подтверждение — не автопереход
       return;
     }
-    timer.current=window.setTimeout(()=>{ setQ(makeSequenceQuestion(cur,q)); setFb('ask'); setPicked(null); setExplain(null); }, 1100);
+    timer.current=window.setTimeout(()=>{ setQ(makeSequenceQuestion(cur,q)); setFb('ask'); setPicked(null); setExplain(null); }, 1700);
   };
   const next = () => { if(!cur||!q) return; setQ(makeSequenceQuestion(cur,q)); setFb('ask'); setPicked(null); setExplain(null); };
 
@@ -95,9 +95,9 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
           <BigButton color="mint" className="mt-3 h-12 w-full" onClick={next}>➡️ Дальше</BigButton>
         </div>
       )}
-      {fb === 'bad' && explain && (
+      {fb === 'bad' && (
         <div className="animate-pop-in mt-4 rounded-blob bg-white p-4 text-center shadow-[0_6px_0_#f0e7d6]">
-          <p className="text-sm font-extrabold text-[#917ea8]">Правильно: {q.answer}. {explain}</p>
+          <p className="text-sm font-extrabold text-[#c07a2a]">Неверно — попробуй ещё!</p>
           <BigButton color="sun" className="mt-3 h-12 w-full" onClick={next}>Попробовать ещё</BigButton>
         </div>
       )}
