@@ -8,6 +8,12 @@ export interface SequenceQuestion {
   hint?: string;
 }
 
+export function explainSequence(kind: SequenceKind, question: SequenceQuestion): string {
+  if (kind === 'odd') return `Лишнее ${question.answer} — не подходит под шаг ряда`;
+  // next / gap: infer step from question
+  return `Правило: продолжи ряд → ${question.answer}`;
+}
+
 function progression(type: number): { seq: number[]; next: number; rule: string } {
   const start = rnd(1, 12);
   if (type === 0) { // +step

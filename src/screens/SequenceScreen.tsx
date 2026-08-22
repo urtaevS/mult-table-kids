@@ -4,7 +4,7 @@ import BigButton from '../components/BigButton';
 import Confetti from '../components/Confetti';
 import Mascot from '../components/Mascot';
 import { OPT_STYLES } from '../lib/styles';
-import { makeSequenceQuestion, type SequenceQuestion } from '../lib/sequence';
+import { explainSequence, makeSequenceQuestion, type SequenceQuestion } from '../lib/sequence';
 import { playCorrect, playWrong } from '../lib/sounds';
 import type { Screen, SequenceKind } from '../types';
 
@@ -22,14 +22,21 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
   const start=(k:SequenceKind)=>{ setCur(k); const qq=makeSequenceQuestion(k); setQ(qq); setFb('ask'); setPicked(null); };
   useEffect(()=>{ if(kind && !cur) start(kind); },[kind]);
 
+  const [explain, setExplain] = useState<string | null>(null);
   const answer=(opt:number)=>{
     if(fb!=='ask'||!q||!cur) return;
     const ok=opt===q.answer;
     recordAnswer(2,ok); recordSequence(cur, ok);
     if(ok){ playCorrect(); setBurst(b=>b+1);} else playWrong();
     setPicked(opt); setFb(ok?'ok':'bad');
-    timer.current=window.setTimeout(()=>{ setQ(makeSequenceQuestion(cur,q)); setFb('ask'); setPicked(null); }, ok?700:1100);
+    setExplain(explainSequence(cur, q));
+    if (ok) {
+      // требуется подтверждение — не автопереход
+      return;
+    }
+    timer.current=window.setTimeout(()=>{ setQ(makeSequenceQuestion(cur,q)); setFb('ask'); setPicked(null); setExplain(null); }, 1100);
   };
+  const next = () => { if(!cur||!q) return; setQ(makeSequenceQuestion(cur,q)); setFb('ask'); setPicked(null); setExplain(null); };
 
   if(!cur || !q){
     return (
@@ -82,8 +89,20 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
           return <button key={i} type="button" onClick={()=>answer(opt)} disabled={fb!=='ask'} className={`h-[68px] rounded-3xl text-[26px] font-extrabold transition-all duration-150 active:translate-y-1 ${cls}`}>{opt}</button>;
         })}
       </div>
+      {fb === 'ok' && explain && (
+        <div className="animate-pop-in mt-4 rounded-blob bg-white p-4 text-center shadow-[0_6px_0_#f0e7d6]">
+          <p className="text-sm font-extrabold text-mint-dark">Верно! ✅ {explain}</p>
+          <BigButton color="mint" className="mt-3 h-12 w-full" onClick={next}>➡️ Дальше</BigButton>
+        </div>
+      )}
+      {fb === 'bad' && explain && (
+        <div className="animate-pop-in mt-4 rounded-blob bg-white p-4 text-center shadow-[0_6px_0_#f0e7d6]">
+          <p className="text-sm font-extrabold text-[#917ea8]">Правильно: {q.answer}. {explain}</p>
+          <BigButton color="sun" className="mt-3 h-12 w-full" onClick={next}>Попробовать ещё</BigButton>
+        </div>
+      )}
       <div className="mt-6 flex justify-center">
-        <Mascot emoji={fb==='ok'?'🥳':fb==='bad'?'🤗':'🔢'} message={fb==='ok'?'Верно!':fb==='bad'?`Ответ: ${q.answer}`: cur==='next'?'Продолжи ряд!':'Найди лишнее!'} />
+        <Mascot emoji={fb==='ok'?'🥳':fb==='bad'?'🤗':'🔢'} message={fb==='ok'?'Жми «Дальше»':fb==='bad'?'Запомни правило': cur==='next'?'Продолжи ряд!':'Найди лишнее!'} />
       </div>
     </main>
   );

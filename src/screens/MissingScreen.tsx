@@ -49,7 +49,7 @@ export default function MissingScreen({ op, recordAnswer, recordMissing, go }: P
           {OPS.map(o=>(
             <button key={o.id} type="button" onClick={()=>start(o.id)} className="flex flex-col items-center gap-1 rounded-3xl bg-white px-3 py-4 text-center font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
               {o.id === 'mix' ? (
-                <span className="grid h-10 w-10 grid-cols-2 place-items-center gap-0 rounded-2xl bg-candy-soft text-[13px] font-black leading-none text-[#c74e7d]">
+                <span className="grid h-10 w-10 grid-cols-2 place-items-center gap-0 rounded-2xl bg-candy-soft text-[13px] font-black leading-none text-ink">
                   <span>×</span><span>÷</span><span>+</span><span>−</span>
                 </span>
               ) : (
