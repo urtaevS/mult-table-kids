@@ -60,11 +60,11 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
     <main className="relative z-10 mx-auto max-w-md px-4 pb-32 pt-5">
       <div className="flex items-center gap-2">
         <button type="button" onClick={()=>{ setCur(null); setQ(null); }} className="grid h-12 w-12 place-items-center rounded-2xl bg-white shadow-[0_4px_0_#ece3d2] active:translate-y-0.5"><ArrowLeft size={24} strokeWidth={2.8}/></button>
-        <h1 className="flex-1 text-center font-display text-base font-bold">{cur==='next' ? '➡️ Следующее' : '🚫 Лишнее'}</h1>
+        <h1 className="flex-1 text-center font-display text-base font-bold">{cur==='next' ? '➡️ Следующее' : cur==='odd' ? '🚫 Лишнее' : cur==='gap' ? '❓ Пропущенное' : '🔀 Вперемешку'}</h1>
         <button type="button" onClick={()=>go({name:'home'})} className="rounded-full bg-white px-3 py-2 text-xs font-extrabold shadow-[0_3px_0_#ece3d2]">🏠</button>
       </div>
       <div className="relative mt-5 rounded-blob bg-white p-7 text-center shadow-[0_6px_0_#f0e7d6]">
-        <div className="text-xs font-extrabold tracking-widest text-[#8d84a3]">{q.hint ?? (cur==='next' ? 'Какое следующее?' : 'Какое не подходит?')}</div>
+        <div className="text-xs font-extrabold tracking-widest text-[#8d84a3]">{q.hint ?? (cur==='next' ? 'Какое следующее?' : cur==='odd' ? 'Какое не подходит?' : cur==='gap' ? 'Вставь пропущенное' : 'Какое подходит?')}</div>
         <div className="mt-1 font-display text-[28px] font-bold leading-tight">{q.display}</div>
         {fb==='ok' && <div className="pointer-events-none absolute inset-0 grid place-items-center"><span className="animate-star-rise text-6xl">⭐</span></div>}
         <Confetti burst={burst}/>
@@ -79,7 +79,7 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
       </div>
       {fb === 'ok' && explain && (
         <div className="animate-pop-in mt-4 rounded-blob bg-white p-4 text-center shadow-[0_6px_0_#f0e7d6]">
-          <p className="text-sm font-extrabold text-mint-dark">Верно! ✅ {explain}</p>
+          <p className="text-sm font-extrabold text-mint-dark">Верно! ✅</p>
           <BigButton color="mint" className="mt-3 h-12 w-full" onClick={next}>➡️ Дальше</BigButton>
         </div>
       )}
@@ -90,7 +90,7 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
         </div>
       )}
       <div className="mt-6 flex justify-center">
-        <Mascot emoji={fb==='ok'?'🥳':fb==='bad'?'🤗':'🔢'} message={fb==='ok'?'Жми «Дальше»':fb==='bad'?'Запомни правило': cur==='next'?'Продолжи ряд!':'Найди лишнее!'} />
+        <Mascot emoji={fb==='ok'?'🥳':fb==='bad'?'🤗':'🔢'} message={fb==='ok'?'Жми «Дальше»':fb==='bad'?'Запомни правило': cur==='next'?'Продолжи ряд!':cur==='odd'?'Найди лишнее!':cur==='gap'?'Вставь пропущенное':'Угадай!'} />
       </div>
     </main>
   );
