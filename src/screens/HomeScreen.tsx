@@ -41,7 +41,13 @@ export default function HomeScreen({ progress, go }: { progress: Progress; go: (
         </h1>
       </header>
 
-      <div className="mt-6 space-y-3">
+      <div className="mt-2 flex items-center gap-3">
+        <div className="h-px flex-1 bg-[#ece3d2]" />
+        <span className="rounded-full bg-white px-3 py-1 text-[11px] font-extrabold tracking-widest text-[#b8a9c8]">УМНОЖЕНИЕ</span>
+        <div className="h-px flex-1 bg-[#ece3d2]" />
+      </div>
+
+      <div className="mt-3 space-y-3">
         {ACTIONS.slice(0, 3).map((a, i) => (
           <BigButton
             key={a.label}
