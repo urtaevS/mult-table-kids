@@ -18,7 +18,7 @@ function StatCard({ emoji, label, value }: { emoji: string; label: string; value
   );
 }
 
-export default function ResultsScreen({ progress, go, resetProgress }: { progress: Progress; go: (s: Screen) => void; resetProgress?: () => void }) {
+export default function ResultsScreen({ progress, go, resetProgress, importProgress }: { progress: Progress; go: (s: Screen) => void; resetProgress?: () => void; importProgress?: (raw: string) => boolean }) {
   const mastered = masteryCount(progress);
   const acc = progress.answersTotal ? Math.round((progress.answersCorrect / progress.answersTotal) * 100) : null;
   const [soundOn, setSoundOn] = useState(true);
@@ -179,6 +179,45 @@ export default function ResultsScreen({ progress, go, resetProgress }: { progres
           🚀 Тренироваться дальше
         </BigButton>
       )}
+
+      <div className="mt-4 flex items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={() => {
+            try {
+              const raw = JSON.stringify(progress);
+              const blob = new Blob([raw], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url; a.download = `mult-table-progress-${new Date().toISOString().slice(0,10)}.json`;
+              a.click();
+              URL.revokeObjectURL(url);
+            } catch { alert('Не удалось экспортировать'); }
+          }}
+          className="rounded-full bg-white px-4 py-2 text-xs font-extrabold text-[#6a4fa0] shadow-[0_3px_0_#e6dfd0] active:translate-y-0.5"
+        >
+          ⬆️ Экспорт
+        </button>
+        <label className="cursor-pointer rounded-full bg-white px-4 py-2 text-xs font-extrabold text-[#6a4fa0] shadow-[0_3px_0_#e6dfd0] active:translate-y-0.5">
+          ⬇️ Импорт
+          <input
+            type="file"
+            accept=".json,application/json"
+            className="hidden"
+            onChange={e => {
+              const f = e.target.files?.[0];
+              if (!f) return;
+              const r = new FileReader();
+              r.onload = () => {
+                const ok = importProgress?.(String(r.result ?? ''));
+                alert(ok ? 'Прогресс импортирован ✅' : 'Неверный файл ❌');
+              };
+              r.readAsText(f);
+              e.target.value = '';
+            }}
+          />
+        </label>
+      </div>
 
       <button
         type="button"

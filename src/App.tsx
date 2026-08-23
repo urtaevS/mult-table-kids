@@ -17,7 +17,7 @@ import UpdateBanner from './components/UpdateBanner';
 import type { Screen } from './types';
 
 export default function App() {
-  const { progress, recordAnswer, recordArithmetic, recordMissing, recordSequence, markStudied, finishTest, finishTimeAttack, resetProgress, toast } = useProgress();
+  const { progress, recordAnswer, recordArithmetic, recordMissing, recordSequence, markStudied, finishTest, finishTimeAttack, resetProgress, importProgress, toast } = useProgress();
   const [screen, setScreen] = useState<Screen>({ name: 'home' });
 
   // тихий фон после первого взаимодействия (требование браузеров)
@@ -77,7 +77,7 @@ export default function App() {
     case 'arithmetic': view = <ArithmeticScreen op={screen.op} recordAnswer={recordAnswer} recordArithmetic={recordArithmetic} go={go} />; break;
     case 'missing': view = <MissingScreen op={screen.op} recordAnswer={recordAnswer} recordMissing={recordMissing} go={go} />; break;
     case 'sequence': view = <SequenceScreen kind={screen.kind} recordAnswer={recordAnswer} recordSequence={recordSequence} go={go} />; break;
-    case 'results': view = <ResultsScreen progress={progress} go={go} resetProgress={resetProgress} />; break;
+    case 'results': view = <ResultsScreen progress={progress} go={go} resetProgress={resetProgress} importProgress={importProgress} />; break;
   }
 
   return (

@@ -183,5 +183,16 @@ export function useProgress() {
     setProgress({ ...DEFAULT });
   }, []);
 
-  return { progress, recordAnswer, recordArithmetic, recordMissing, recordSequence, markStudied, finishTest, finishTimeAttack, resetProgress, toast };
+  const importProgress = useCallback((raw: string): boolean => {
+    try {
+      const data = JSON.parse(raw) as Partial<Progress>;
+      if (typeof data.stars !== 'number' || typeof data.answersTotal !== 'number') return false;
+      const p = { ...DEFAULT, ...data, bestTimeAttack: data.bestTimeAttack ?? {}, arithmetic: { ...DEFAULT.arithmetic, ...data.arithmetic }, missing: { ...DEFAULT.missing, ...data.missing }, sequence: { ...DEFAULT.sequence, ...data.sequence } } as Progress;
+      seen.current = new Set(p.achievements);
+      setProgress(p);
+      return true;
+    } catch { return false; }
+  }, []);
+
+  return { progress, recordAnswer, recordArithmetic, recordMissing, recordSequence, markStudied, finishTest, finishTimeAttack, resetProgress, importProgress, toast };
 }
