@@ -3,6 +3,7 @@ import BigButton from '../components/BigButton';
 import Mascot from '../components/Mascot';
 import { ACHIEVEMENTS } from '../lib/achievements';
 import { Icon } from '../lib/icons';
+import { iconBg } from '../lib/theme';
 import { isMastered, masteryCount } from '../lib/progress';
 import { initSounds, playBg, setMuted, stopBg } from '../lib/sounds';
 import { TABLES } from '../lib/tables';
@@ -103,7 +104,7 @@ export default function ResultsScreen({ progress, go, resetProgress, importProgr
           const un = progress.achievements.includes(a.id);
           return (
             <div key={a.id} className={`rounded-2xl p-3.5 shadow-[0_3px_0_#f0e7d6] ${un ? 'bg-white' : 'bg-white/50 opacity-60'}`}>
-              <div className="flex h-8 items-center">{un ? <Icon name={a.icon} size={22} /> : <Icon name="Lock" size={18} className="opacity-40" />}</div>
+              <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${un ? iconBg(a.icon) : 'bg-[#f0e7d6] text-[#b8a88a]'}`}>{un ? <Icon name={a.icon} size={18} /> : <Icon name="Lock" size={16} />}</div>
               <div className="mt-1 text-sm font-extrabold leading-tight">{a.title}</div>
               <div className="mt-0.5 text-xs font-bold text-[#8d84a3]">{a.desc}</div>
             </div>
