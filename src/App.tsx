@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { Award } from 'lucide-react';
 import BottomNav, { type NavKey } from './components/BottomNav';
 import { initSounds, playBg } from './lib/sounds';
 import Decor from './components/Decor';
@@ -88,8 +89,8 @@ export default function App() {
       <UpdateBanner current={`v${__APP_VERSION__}`} />
       {toast && (
         <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
-          <div className="animate-toast rounded-full bg-ink px-5 py-2.5 font-extrabold text-white shadow-xl">
-            🏆 Новое достижение: {toast}
+          <div className="inline-flex items-center gap-2 animate-toast rounded-full bg-ink px-5 py-2.5 font-extrabold text-white shadow-xl">
+            <Award size={18} /> Новое достижение: {toast}
           </div>
         </div>
       )}

@@ -2,16 +2,17 @@ import { useEffect, useState } from 'react';
 import BigButton from '../components/BigButton';
 import Mascot from '../components/Mascot';
 import { ACHIEVEMENTS } from '../lib/achievements';
+import { Icon } from '../lib/icons';
 import { isMastered, masteryCount } from '../lib/progress';
 import { initSounds, playBg, setMuted, stopBg } from '../lib/sounds';
 import { TABLES } from '../lib/tables';
 import { plural } from '../lib/utils';
 import type { Progress, Screen } from '../types';
 
-function StatCard({ emoji, label, value }: { emoji: string; label: string; value: string }) {
+function StatCard({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <div className="rounded-2xl bg-white p-3 text-center shadow-[0_3px_0_#f0e7d6]">
-      <div className="text-xl">{emoji}</div>
+      <div className="flex justify-center"><Icon name={icon} size={20} className="text-[#8d84a3]" /></div>
       <div className="mt-0.5 font-display text-lg font-bold leading-none">{value}</div>
       <div className="mt-1 text-[11px] font-extrabold text-[#8d84a3]">{label}</div>
     </div>
@@ -67,15 +68,15 @@ export default function ResultsScreen({ progress, go, resetProgress, importProgr
       </div>
 
       <div className="mt-4 rounded-blob bg-gradient-to-br from-sun to-coral p-5 text-center text-white shadow-[0_6px_0_#e0955f]">
-        <div className="text-4xl">⭐</div>
+        <div className="flex justify-center"><Icon name="Star" size={36} className="text-white" /></div>
         <div className="mt-1 font-display text-4xl font-bold">{progress.stars}</div>
         <div className="font-extrabold opacity-95">{plural(progress.stars, ['звезда', 'звезды', 'звёзд'])}</div>
       </div>
 
       <div className="mt-3.5 grid grid-cols-3 gap-2.5">
-        <StatCard emoji="🎯" label="верных ответов" value={acc === null ? '—' : `${acc}%`} />
-        <StatCard emoji="🔥" label="лучшая серия" value={String(progress.bestStreak)} />
-        <StatCard emoji="🏅" label="лучший тест" value={progress.bestTest > 0 ? `${progress.bestTest}/10` : '—'} />
+        <StatCard icon="Target" label="верных ответов" value={acc === null ? '—' : `${acc}%`} />
+        <StatCard icon="Flame" label="лучшая серия" value={String(progress.bestStreak)} />
+        <StatCard icon="Trophy" label="лучший тест" value={progress.bestTest > 0 ? `${progress.bestTest}/10` : '—'} />
       </div>
 
       <h2 className="mt-6 font-display text-base font-bold">Таблицы</h2>
@@ -102,7 +103,7 @@ export default function ResultsScreen({ progress, go, resetProgress, importProgr
           const un = progress.achievements.includes(a.id);
           return (
             <div key={a.id} className={`rounded-2xl p-3.5 shadow-[0_3px_0_#f0e7d6] ${un ? 'bg-white' : 'bg-white/50 opacity-60'}`}>
-              <div className="text-2xl">{un ? a.emoji : '🔒'}</div>
+              <div className="flex h-8 items-center">{un ? <Icon name={a.icon} size={22} /> : <Icon name="Lock" size={18} className="opacity-40" />}</div>
               <div className="mt-1 text-sm font-extrabold leading-tight">{a.title}</div>
               <div className="mt-0.5 text-xs font-bold text-[#8d84a3]">{a.desc}</div>
             </div>

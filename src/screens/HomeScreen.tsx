@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { ChevronRight } from 'lucide-react';
+import { Icon } from '../lib/icons';
 import BigButton, { type ChunkyColor } from '../components/BigButton';
 import Mascot from '../components/Mascot';
 import ProgressBar from '../components/ProgressBar';
@@ -12,15 +13,15 @@ const GREETINGS = [
   'Ты уже близко к цели! ✨',
 ];
 
-const ACTIONS: { emoji: string; label: string; color: ChunkyColor; to: Screen }[] = [
-  { emoji: '📚', label: 'Учить',           color: 'sky',   to: { name: 'learn' } },
-  { emoji: '🎯', label: 'Тренироваться',   color: 'mint',  to: { name: 'train' } },
-  { emoji: '⏱️', label: 'На время',        color: 'coral', to: { name: 'time-attack' } },
-  { emoji: '🧮', label: 'Сложение/вычитание', color: 'grape', to: { name: 'arithmetic', op: 'mix' } },
-  { emoji: '❓', label: 'Пропущенная цифра', color: 'sky', to: { name: 'missing', op: 'mix' } },
-  { emoji: '🔢', label: 'Ряд чисел',       color: 'candy', to: { name: 'sequence', kind: 'next' } },
-  { emoji: '⚡', label: 'Быстрый тест',    color: 'sun',   to: { name: 'test' } },
-  { emoji: '🏆', label: 'Мои результаты',  color: 'grape', to: { name: 'results' } },
+const ACTIONS: { icon: string; label: string; color: ChunkyColor; to: Screen }[] = [
+  { icon: 'BookOpen', label: 'Учить',           color: 'sky',   to: { name: 'learn' } },
+  { icon: 'Target', label: 'Тренироваться',   color: 'mint',  to: { name: 'train' } },
+  { icon: 'Timer', label: 'На время',        color: 'coral', to: { name: 'time-attack' } },
+  { icon: 'Calculator', label: 'Сложение/вычитание', color: 'grape', to: { name: 'arithmetic', op: 'mix' } },
+  { icon: 'Search', label: 'Пропущенная цифра', color: 'sky', to: { name: 'missing', op: 'mix' } },
+  { icon: 'ListOrdered', label: 'Ряд чисел',       color: 'candy', to: { name: 'sequence', kind: 'next' } },
+  { icon: 'Zap', label: 'Быстрый тест',    color: 'sun',   to: { name: 'test' } },
+  { icon: 'Trophy', label: 'Мои результаты',  color: 'grape', to: { name: 'results' } },
 ];
 
 export default function HomeScreen({ progress, go }: { progress: Progress; go: (s: Screen) => void }) {
@@ -56,7 +57,7 @@ export default function HomeScreen({ progress, go }: { progress: Progress; go: (
             className="animate-pop-in flex h-16 w-full items-center gap-3 px-4 text-xl"
             style={{ animationDelay: `${i * 60}ms` }}
           >
-            <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/35 text-2xl">{a.emoji}</span>
+            <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/35"><Icon name={a.icon} size={22} /></span>
             {a.label}
             <ChevronRight className="ml-auto opacity-70" size={26} strokeWidth={3} />
           </BigButton>
@@ -78,7 +79,7 @@ export default function HomeScreen({ progress, go }: { progress: Progress; go: (
             className="animate-pop-in flex h-16 w-full items-center gap-3 px-4 text-xl"
             style={{ animationDelay: `${(i + 3) * 60}ms` }}
           >
-            <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/35 text-2xl">{a.emoji}</span>
+            <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white/35"><Icon name={a.icon} size={22} /></span>
             {a.label}
             <ChevronRight className="ml-auto opacity-70" size={26} strokeWidth={3} />
           </BigButton>
