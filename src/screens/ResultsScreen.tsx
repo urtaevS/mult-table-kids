@@ -196,10 +196,10 @@ export default function ResultsScreen({ progress, go, resetProgress, importProgr
           }}
           className="rounded-full bg-white px-4 py-2 text-xs font-extrabold text-[#6a4fa0] shadow-[0_3px_0_#e6dfd0] active:translate-y-0.5"
         >
-          ⬆️ Экспорт
+          💾 Сохранить
         </button>
         <label className="cursor-pointer rounded-full bg-white px-4 py-2 text-xs font-extrabold text-[#6a4fa0] shadow-[0_3px_0_#e6dfd0] active:translate-y-0.5">
-          ⬇️ Импорт
+          📂 Восстановить
           <input
             type="file"
             accept=".json,application/json"
