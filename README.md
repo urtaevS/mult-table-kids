@@ -24,13 +24,18 @@
 ## 🖼️ Скриншоты (мобильный вид)
 
 <div align="center">
-  <img src="screenshots/mobile-home.png" width="200" alt="Экран «Главная»"/>
-  <img src="screenshots/mobile-learn.png" width="200" alt="Экран «Учить»"/>
-  <img src="screenshots/mobile-train.png" width="200" alt="Экран «Тренировка»"/>
-  <img src="screenshots/mobile-results.png" width="200" alt="Экран «Результаты»"/>
+  <img src="screenshots/mobile-home.png" width="160" alt="Главная"/>
+  <img src="screenshots/mobile-learn.png" width="160" alt="Учить"/>
+  <img src="screenshots/mobile-train.png" width="160" alt="Тренировка"/>
+  <img src="screenshots/mobile-results.png" width="160" alt="Результаты"/>
 </div>
-
 <p align="center"><sub>Главная · Учить · Тренировка · Результаты</sub></p>
+<div align="center">
+  <img src="screenshots/mobile-arithmetic.png" width="160" alt="Сложение/вычитание"/>
+  <img src="screenshots/mobile-missing.png" width="160" alt="Пропущенная цифра"/>
+  <img src="screenshots/mobile-sequence.png" width="160" alt="Ряд чисел"/>
+</div>
+<p align="center"><sub>➕ Сложение/вычитание · ❓ Пропущенная цифра · 🔢 Ряд чисел</sub></p>
 
 ## 🚀 Быстрый старт
 
