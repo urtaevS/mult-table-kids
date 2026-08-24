@@ -49,12 +49,8 @@ export default function ResultsScreen({ progress, go, resetProgress, importProgr
               : 'border-[#ede3cc] bg-white text-[#8d84a3]'
           }`}
         >
-          <span
-            className={`grid h-7 w-7 place-items-center rounded-full text-[15px] shadow-sm ${
-              soundOn ? 'bg-sun text-white' : 'bg-[#f3ece0] text-[#b8a88a]'
-            }`}
-          >
-            {soundOn ? '🔊' : '🔇'}
+          <span className={`grid h-7 w-7 place-items-center rounded-full shadow-sm ${soundOn ? 'bg-sun text-white' : 'bg-[#f3ece0] text-[#b8a88a]'}`}>
+            <Icon name={soundOn ? 'Volume2' : 'VolumeX'} size={14} />
           </span>
           <span>{soundOn ? 'Звук вкл' : 'Звук выкл'}</span>
           <span

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { Icon } from '../lib/icons';
 import BigButton from '../components/BigButton';
 import Confetti from '../components/Confetti';
 import Mascot from '../components/Mascot';
@@ -45,9 +46,9 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
         <h1 className="mt-4 font-display text-2xl font-bold">🔢 Последовательность</h1>
         <p className="mt-1 text-sm font-extrabold text-[#8d84a3]">Продолжи ряд или найди лишнее</p>
         <div className="mt-5 space-y-3">
-          {([{id:'next',label:'Следующее',emoji:'➡️',desc:'2, 4, 6, ?', bg:'bg-grape-soft'}, {id:'odd',label:'Лишнее',emoji:'🚫',desc:'3, 6, 7, 9', bg:'bg-grape-soft'}, {id:'gap',label:'Пропущенное',emoji:'❓',desc:'2, 4, ?, 8', bg:'bg-grape-soft'}, {id:'mix',label:'Вперемешку',emoji:'🔀',desc:'все виды', bg:'bg-sun-soft'}] as const).map(o=>(
+          {([{id:'next',label:'Следующее',icon:'ArrowRight',desc:'2, 4, 6, ?', bg:'bg-grape-soft text-[#7a55e0]'}, {id:'odd',label:'Лишнее',icon:'Ban',desc:'3, 6, 7, 9', bg:'bg-coral-soft text-[#de5646]'}, {id:'gap',label:'Пропущенное',icon:'HelpCircle',desc:'2, 4, ?, 8', bg:'bg-sky-soft text-[#2e8fdb]'}, {id:'mix',label:'Вперемешку',icon:'Shuffle',desc:'все виды', bg:'bg-sun-soft text-[#a67b00]'}] as const).map(o=>(
             <button key={o.id} type="button" onClick={()=>start(o.id as SequenceKind)} className="flex w-full items-center gap-3 rounded-3xl bg-white px-4 py-4 text-left font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
-              <span className={`grid h-11 w-11 place-items-center rounded-2xl text-xl ${o.bg}`}>{o.emoji}</span>
+              <span className={`grid h-11 w-11 place-items-center rounded-2xl ${o.bg}`}><Icon name={o.icon} size={18} /></span>
               <span className="flex-1"><span className="block text-[15px] leading-none">{o.label}</span><span className="block text-xs font-bold text-[#8d84a3]">{o.desc}</span></span>
               <span className="rounded-full bg-ink px-3 py-1.5 text-xs text-white">Играть →</span>
             </button>

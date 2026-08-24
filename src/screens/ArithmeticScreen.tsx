@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { Icon } from '../lib/icons';
 import BigButton from '../components/BigButton';
 import Confetti from '../components/Confetti';
 import Mascot from '../components/Mascot';
@@ -8,10 +9,10 @@ import { makeArithmeticQuestion, type ArithQuestion } from '../lib/arithmetic';
 import { playCorrect, playWrong } from '../lib/sounds';
 import type { ArithmeticOp, Screen } from '../types';
 
-const OPS: { id: ArithmeticOp; label: string; desc: string }[] = [
-  { id: 'add', label: 'Сложение', desc: '➕ до 100' },
-  { id: 'sub', label: 'Вычитание', desc: '➖ до 100' },
-  { id: 'mix', label: 'Вперемешку', desc: '➕➖ вперемешку' },
+const OPS: { id: ArithmeticOp; label: string; desc: string; icon: string }[] = [
+  { id: 'add', label: 'Сложение', desc: '➕ до 100', icon: 'Plus' },
+  { id: 'sub', label: 'Вычитание', desc: '➖ до 100', icon: 'Minus' },
+  { id: 'mix', label: 'Вперемешку', desc: '➕➖ вперемешку', icon: 'Shuffle' },
 ];
 
 interface Props { op?: ArithmeticOp; recordAnswer: (t: number, c: boolean) => void; recordArithmetic: (o: ArithmeticOp, c: boolean) => void; go: (s: Screen) => void; }
@@ -46,7 +47,7 @@ export default function ArithmeticScreen({ op, recordAnswer, recordArithmetic, g
         <div className="mt-5 space-y-3">
           {OPS.map(o => (
             <button key={o.id} type="button" onClick={() => start(o.id)} className="flex w-full items-center gap-3 rounded-3xl bg-white px-4 py-4 text-left font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
-              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-sun-soft text-xl">{o.id === 'add' ? '➕' : o.id === 'sub' ? '➖' : '🔀'}</span>
+              <span className={`grid h-11 w-11 place-items-center rounded-2xl ${o.icon === 'Plus' ? 'bg-sky-soft text-[#2e8fdb]' : o.icon === 'Minus' ? 'bg-coral-soft text-[#de5646]' : 'bg-grape-soft text-[#7a55e0]'}`}><span className="grid place-items-center"><Icon name={o.icon} size={20} /></span></span>
               <span className="flex-1"><span className="block text-lg leading-none">{o.label}</span><span className="block text-xs text-[#8d84a3]">{o.desc}</span></span>
               <span className="rounded-full bg-ink px-3 py-1.5 text-xs text-white">Играть →</span>
             </button>
