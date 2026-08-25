@@ -28,6 +28,8 @@ jobs:
 
       - name: Build web app
         run: npm run build
+        env:
+          APP_VERSION: ${{ env.VERSION_NAME || '' }}
 
       - name: Copy web build into Android assets
         run: |
