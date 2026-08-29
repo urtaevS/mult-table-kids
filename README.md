@@ -69,3 +69,17 @@ React · TypeScript · Vite · Tailwind CSS · vite-plugin-pwa · Capacitor · P
 ---
 
 Сделано с заботой, чтобы учёба была радостью. 🌟
+
+---
+
+<p align="center">
+  <strong>Если этот проект оказался полезен для вас — вы можете поддержать автора ☕</strong><br>
+  <em>Каждая чашечка кофе помогает создавать новые blueprint'ы и поддерживать существующие.</em>
+</p>
+
+<p align="center">
+  <a href="https://pay.cloudtips.ru/p/0d93f1af" target="_blank" rel="noreferrer noopener">
+    <img src="https://img.shields.io/badge/☕_Кофе CloudTips-blue?style=for-the-badge" alt="Поддержать проект" />
+  </a>
+</p>
+
