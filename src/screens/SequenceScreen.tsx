@@ -41,10 +41,13 @@ export default function SequenceScreen({ kind, recordAnswer, recordSequence, go 
 
   if(!cur || !q){
     return (
-      <main className="relative z-10 mx-auto max-w-md px-4 pb-32 pt-8">
-        <button type="button" onClick={()=>go({name:'home'})} className="grid h-12 w-12 place-items-center rounded-2xl bg-white shadow-[0_4px_0_#ece3d2] active:translate-y-0.5"><ArrowLeft size={24} strokeWidth={2.8}/></button>
-        <h1 className="mt-4 font-display text-2xl font-bold">🔢 Последовательность</h1>
-        <p className="mt-1 text-sm font-extrabold text-[#8d84a3]">Продолжи ряд или найди лишнее</p>
+      <main className="relative z-10 mx-auto max-w-md px-4 pb-32 pt-[max(1.5rem,env(safe-area-inset-top))]">
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={()=>go({name:'home'})} className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white shadow-[0_4px_0_#ece3d2] active:translate-y-0.5"><ArrowLeft size={24} strokeWidth={2.8}/></button>
+          <h1 className="flex-1 text-center font-display text-xl font-bold">Ряд чисел</h1>
+          <span className="h-12 w-12 shrink-0" aria-hidden />
+        </div>
+        <p className="mt-3 text-center text-sm font-extrabold text-[#8d84a3]">Продолжи ряд или найди лишнее</p>
         <div className="mt-5 space-y-3">
           {([{id:'next',label:'Следующее',icon:'ArrowRight',desc:'2, 4, 6, ?', bg:'bg-grape-soft text-[#7a55e0]'}, {id:'odd',label:'Лишнее',icon:'Ban',desc:'3, 6, 7, 9', bg:'bg-coral-soft text-[#de5646]'}, {id:'gap',label:'Пропущенное',icon:'HelpCircle',desc:'2, 4, ?, 8', bg:'bg-sky-soft text-[#2e8fdb]'}, {id:'mix',label:'Вперемешку',icon:'Shuffle',desc:'все виды', bg:'bg-sun-soft text-[#a67b00]'}] as const).map(o=>(
             <button key={o.id} type="button" onClick={()=>start(o.id as SequenceKind)} className="flex w-full items-center gap-3 rounded-3xl bg-white px-4 py-4 text-left font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">

@@ -1,5 +1,13 @@
 {
 	"appId": "com.akira.multtable",
 	"appName": "Математика — играя",
-	"webDir": "dist"
+	"webDir": "dist",
+	"plugins": {
+		"CapacitorHttp": {
+			"enabled": false
+		}
+	},
+	"android": {
+		"backgroundColor": "#FFF8EC"
+	}
 }

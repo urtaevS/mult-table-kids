@@ -34,7 +34,7 @@ export default function ResultsScreen({ progress, go, resetProgress, importProgr
   };
 
   return (
-    <main className="relative z-10 mx-auto max-w-md px-4 pb-32 pt-5">
+    <main className="relative z-10 mx-auto max-w-md px-4 pb-32 pt-[max(1.25rem,env(safe-area-inset-top))]">
       <header className="text-center">
         <h1 className="font-display text-2xl font-bold">Мои результаты</h1>
       </header>
@@ -197,16 +197,30 @@ export default function ResultsScreen({ progress, go, resetProgress, importProgr
       <div className="mt-4 flex items-center justify-center gap-2">
         <button
           type="button"
-          onClick={() => {
+          onClick={async () => {
             try {
-              const raw = JSON.stringify(progress);
+              const raw = JSON.stringify(progress, null, 2);
+              // Capacitor/WebView: try native file save via share intent fallback to download
               const blob = new Blob([raw], { type: 'application/json' });
+              const file = new File([blob], `mult-table-progress-${new Date().toISOString().slice(0,10)}.json`, { type: 'application/json' });
+              const canShare = (navigator as unknown as { canShare?: (d: { files: File[] }) => boolean })?.canShare?.({ files: [file] });
+              if (canShare && navigator.share) {
+                await navigator.share({ files: [file], title: 'Прогресс — Учимся играя' });
+                return;
+              }
               const url = URL.createObjectURL(blob);
               const a = document.createElement('a');
               a.href = url; a.download = `mult-table-progress-${new Date().toISOString().slice(0,10)}.json`;
+              document.body.appendChild(a);
               a.click();
-              URL.revokeObjectURL(url);
-            } catch { alert('Не удалось экспортировать'); }
+              setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);
+            } catch (e) {
+              try {
+                const raw2 = JSON.stringify(progress, null, 2);
+                await navigator.clipboard.writeText(raw2);
+                alert('Прогресс скопирован в буфер обмена ✅');
+              } catch { alert('Не удалось сохранить: ' + String(e)); }
+            }
           }}
           className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-extrabold text-[#6a4fa0] shadow-[0_3px_0_#e6dfd0] active:translate-y-0.5"
         >

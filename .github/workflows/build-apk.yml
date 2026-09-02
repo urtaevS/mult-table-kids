@@ -26,6 +26,18 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Derive version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VER="${TAG#v}"
+          IFS='.' read -r MA MI PA <<< "$VER"
+          CODE=$(( ${MA:-0}*10000 + ${MI:-0}*100 + ${PA:-0} ))
+          [ "$CODE" -eq 0 ] && CODE=4
+          echo "VERSION_NAME=$VER" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=$CODE" >> "$GITHUB_ENV"
+          echo "Derived $VER -> code $CODE"
+
       - name: Build web app
         run: npm run build
         env:
@@ -55,19 +67,6 @@ jobs:
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
-
-      - name: Derive version from tag
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          TAG="${GITHUB_REF#refs/tags/}"
-          # v1.0.3 -> 1.0.3 ; code = major*10000 + minor*100 + patch (monotonic)
-          VER="${TAG#v}"
-          IFS='.' read -r MA MI PA <<< "$VER"
-          CODE=$(( ${MA:-0}*10000 + ${MI:-0}*100 + ${PA:-0} ))
-          [ "$CODE" -eq 0 ] && CODE=4
-          echo "VERSION_NAME=$VER" >> "$GITHUB_ENV"
-          echo "VERSION_CODE=$CODE" >> "$GITHUB_ENV"
-          echo "Derived $VER -> code $CODE"
 
       - name: Build Debug APK
         working-directory: android

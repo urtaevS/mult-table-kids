@@ -18,8 +18,13 @@ interface Props {
   go: (s: Screen) => void;
 }
 
+type Diff = 'easy' | 'hard';
+const DIFF_TABLES: Record<Diff, number[]> = { easy: [2, 3, 4, 5], hard: [2, 3, 4, 5, 6, 7, 8, 9, 10] };
+
 export default function TrainScreen({ progress, table, recordAnswer, go }: Props) {
-  const [q, setQ] = useState<Question>(() => makeQuestion(table));
+  const diffRef = useRef<Diff>('hard');
+  const windowRef = useRef<boolean[]>([]);
+  const [q, setQ] = useState<Question>(() => makeQuestion(table ?? DIFF_TABLES[diffRef.current][Math.floor(Math.random()*DIFF_TABLES[diffRef.current].length)]));
   const [phase, setPhase] = useState<'ask' | 'correct' | 'wrong'>('ask');
   const [picked, setPicked] = useState<number | null>(null);
   const [burst, setBurst] = useState(0);
@@ -29,8 +34,14 @@ export default function TrainScreen({ progress, table, recordAnswer, go }: Props
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
+  const pickTable = (): number | undefined => {
+    if (table) return table;
+    const pool = DIFF_TABLES[diffRef.current];
+    return pool[Math.floor(Math.random()*pool.length)];
+  };
+
   const nextQuestion = () => {
-    setQ(makeQuestion(table));
+    setQ(makeQuestion(pickTable()));
     setPhase('ask'); setPicked(null); setMsg('Сколько будет? 🤔');
   };
 
@@ -38,6 +49,16 @@ export default function TrainScreen({ progress, table, recordAnswer, go }: Props
     if (phase !== 'ask') return;
     const ok = opt === q.answer;
     recordAnswer(q.a, ok);
+    // адаптивная сложность для общего режима (без конкретной таблицы, вперемешку): <40% → easy, иначе hard
+    if (!table) {
+      windowRef.current.push(ok);
+      if (windowRef.current.length > 10) windowRef.current.shift();
+      if (windowRef.current.length >= 5) {
+        const rate = windowRef.current.filter(Boolean).length / windowRef.current.length;
+        if (rate < 0.4) diffRef.current = 'easy';
+        else if (rate >= 0.6) diffRef.current = 'hard';
+      }
+    }
     if (ok) { playCorrect(); } else { playWrong(); }
     if (ok) {
       setPhase('correct'); setBurst(b => b + 1); setSessionStars(s => s + 1);

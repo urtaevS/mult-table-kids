@@ -4,6 +4,7 @@
 
 @layer base {
   html { -webkit-tap-highlight-color: transparent; }
+  :root { --safe-top: env(safe-area-inset-top); }
   body {
     @apply bg-paper font-body text-ink antialiased;
     background-image: radial-gradient(#f1e6cf 1.3px, transparent 1.3px);
