@@ -10,9 +10,9 @@ import { playCorrect, playWrong } from '../lib/sounds';
 import type { ArithmeticOp, Screen } from '../types';
 
 const OPS: { id: ArithmeticOp; label: string; desc: string; icon: string }[] = [
-  { id: 'add', label: 'Сложение', desc: '➕ до 100', icon: 'Plus' },
-  { id: 'sub', label: 'Вычитание', desc: '➖ до 100', icon: 'Minus' },
-  { id: 'mix', label: 'Вперемешку', desc: '➕➖ вперемешку', icon: 'Shuffle' },
+  { id: 'add', label: 'Сложение', desc: 'до 100', icon: 'Plus' },
+  { id: 'sub', label: 'Вычитание', desc: 'до 100', icon: 'Minus' },
+  { id: 'mix', label: 'Вперемешку', desc: '', icon: 'Shuffle' },
 ];
 
 interface Props { op?: ArithmeticOp; recordAnswer: (t: number, c: boolean) => void; recordArithmetic: (o: ArithmeticOp, c: boolean) => void; go: (s: Screen) => void; }

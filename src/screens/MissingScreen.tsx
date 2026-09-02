@@ -9,12 +9,12 @@ import { makeMissingQuestion, type MissingQuestion } from '../lib/missing';
 import { playCorrect, playWrong } from '../lib/sounds';
 import type { MissingOp, Screen } from '../types';
 
-const OPS: { id: MissingOp; label: string; desc: string; icon: string }[] = [
-  { id: 'mul', label: 'Умножение', desc: '×', icon: 'X' },
-  { id: 'div', label: 'Деление', desc: '÷', icon: 'Divide' },
-  { id: 'add', label: 'Сложение', desc: '+', icon: 'Plus' },
-  { id: 'sub', label: 'Вычитание', desc: '−', icon: 'Minus' },
-  { id: 'mix', label: 'Вперемешку', desc: '×÷+−', icon: 'Shuffle' },
+const OPS: { id: MissingOp; label: string; icon: string }[] = [
+  { id: 'mul', label: 'Умножение', icon: 'X' },
+  { id: 'div', label: 'Деление', icon: 'Divide' },
+  { id: 'add', label: 'Сложение', icon: 'Plus' },
+  { id: 'sub', label: 'Вычитание', icon: 'Minus' },
+  { id: 'mix', label: 'Вперемешку', icon: 'Shuffle' },
 ];
 
 interface Props { op?: MissingOp; recordAnswer: (t:number,c:boolean)=>void; recordMissing: (o:MissingOp,c:boolean)=>void; go:(s:Screen)=>void; }
@@ -57,7 +57,7 @@ export default function MissingScreen({ op, recordAnswer, recordMissing, go }: P
           {OPS.map(o=>(
             <button key={o.id} type="button" onClick={()=>start(o.id)} className="flex w-full items-center gap-3 rounded-3xl bg-white px-4 py-4 text-left font-extrabold shadow-[0_6px_0_#f0e7d6] active:translate-y-1">
               <span className={`grid h-11 w-11 place-items-center rounded-2xl ${o.icon==='X'?'bg-coral-soft text-[#de5646]':o.icon==='Divide'?'bg-sky-soft text-[#2e8fdb]':o.icon==='Plus'?'bg-mint-soft text-[#22a76b]':o.icon==='Minus'?'bg-coral-soft text-[#b42318]':'bg-grape-soft text-[#7a55e0]'}`}><Icon name={o.icon} size={18} /></span>
-              <span className="flex-1"><span className="block text-[15px] leading-none">{o.label}</span><span className="block text-xs font-bold text-[#8d84a3]">{o.desc === '×÷+−' ? 'все операции' : o.desc}</span></span>
+              <span className="flex-1"><span className="block text-[15px] leading-none">{o.label}</span></span>
               <span className="rounded-full bg-ink px-3 py-1.5 text-xs text-white">Играть →</span>
             </button>
           ))}
