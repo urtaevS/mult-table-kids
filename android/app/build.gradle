@@ -19,29 +19,36 @@ android {
     }
     signingConfigs {
         release {
+            // не валим сборку если ключа нет (локально без env / без keystore) — подпишем debug позже если возможно
             def ksFile = file('release.keystore')
             def ksB64 = System.getenv('ANDROID_KEYSTORE_BASE64')
             def ksPath = System.getenv('KEYSTORE_PATH')
-            if (ksB64 && !ksFile.exists()) {
-                def decoded = ksB64.replaceAll("\\s", "").decodeBase64()
-                ksFile.bytes = decoded
-            } else if (ksPath) {
-                ksFile = file(ksPath)
-            }
-            if (ksFile.exists()) {
-                storeFile ksFile
-                storePassword System.getenv('KEYSTORE_PASSWORD') ?: 'multtable123'
-                keyAlias System.getenv('KEY_ALIAS') ?: 'release'
-                keyPassword System.getenv('KEY_PASSWORD') ?: 'multtable123'
+            try {
+                if (ksB64 && !ksFile.exists()) {
+                    def decoded = ksB64.replaceAll("\\s", "").decodeBase64()
+                    ksFile.bytes = decoded
+                } else if (ksPath) {
+                    ksFile = file(ksPath)
+                }
+                if (ksFile.exists()) {
+                    storeFile ksFile
+                    storePassword System.getenv('KEYSTORE_PASSWORD') ?: 'multtable123'
+                    keyAlias System.getenv('KEY_ALIAS') ?: 'release'
+                    keyPassword System.getenv('KEY_PASSWORD') ?: 'multtable123'
+                }
+            } catch (ignored) {
+                logger.warn("release keystore not configured: " + ignored.message)
             }
         }
     }
     buildTypes {
-        // один APK для всех установок — debug тоже подписываем тем же release ключем,
-        // иначе Android считает их разными пакетами и требует удалить старое
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.release
+            initWith buildTypes.debug
+            // если ключ есть — подпишем debug тем же, иначе оставим debug-ключ (симулятор/локально)
+            if (file('release.keystore').exists() || System.getenv('ANDROID_KEYSTORE_BASE64')) {
+                signingConfig signingConfigs.release
+            }
         }
         release {
             minifyEnabled false
