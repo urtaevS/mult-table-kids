@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Математика — играя',
   webDir: 'dist',
   plugins: {
-    CapacitorHttp: { enabled: false },
+    CapacitorHttp: { enabled: true },
     StatusBar: {
       overlaysWebView: false,
       style: 'LIGHT',

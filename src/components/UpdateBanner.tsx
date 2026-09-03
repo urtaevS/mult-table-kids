@@ -48,41 +48,128 @@ export default function UpdateBanner({ current }: { current: string }) {
 
   const downloadAndInstall = async () => {
     if (!latest.apkUrl) {
-      window.open(latest.htmlUrl, '_blank');
+      try {
+        const { Browser } = await import('@capacitor/browser');
+        await Browser.open({ url: latest.htmlUrl });
+      } catch {
+        window.open(latest.htmlUrl, '_blank');
+      }
       return;
     }
     setDownloading(true);
     setProgress(0);
     const controller = new AbortController();
     abortRef.current = controller;
-    try {
-      // WebView/Capacitor fetch к github.com может упасть из-за CORS — сразу пробуем системный браузер/Filesystem как фолбек
-      const trySystemOpen = async (url: string) => {
-        try { const { Browser } = await import('@capacitor/browser'); await Browser.open({ url }); return true; } catch { /* fallback */ }
-        window.open(url, '_blank');
-        return true;
-      };
-      let res: Response;
+    const openReleasesFallback = async () => {
       try {
-        res = await fetch(latest.apkUrl, { signal: controller.signal });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      } catch (e) {
-        // Failed to fetch (CORS / TypeError) — открываем страницу релиза, где кнопка Скачать точно сработает
-        await trySystemOpen(latest.htmlUrl);
-        throw new Error('Не удалось скачать напрямую — открыта страница релиза. Нажми там Скачать.');
+        const { Browser } = await import('@capacitor/browser');
+        await Browser.open({ url: latest.htmlUrl });
+      } catch {
+        window.open(latest.htmlUrl, '_blank');
       }
-      const total = Number(res.headers.get('content-length') || 0);
-      const reader = res.body?.getReader();
-      const chunks: Uint8Array[] = [];
-      let received = 0;
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          if (value) { chunks.push(value); received += value.length; if (total) setProgress(Math.round((received / total) * 100)); }
+    };
+    try {
+      // Сначала пробуем нативный HTTP (CapacitorHttp enabled) — обходит CORS WebView.
+      // Затем — системный DownloadManager, затем — in-app fetch (WAF может отдать 403).
+      let blob: Blob | null = null;
+      let httpStatus: number | null = null;
+      const apkUrl = latest.apkUrl;
+      // 1) Capacitor Http (если плагин включён) — нативный запрос
+      try {
+        const mod = await import('@capacitor/core');
+        const http = (mod as unknown as { CapacitorHttp?: { request: (o: unknown) => Promise<{ status: number; data: string }> } }).CapacitorHttp;
+        if (http?.request) {
+          const r = await http.request({
+            method: 'GET',
+            url: apkUrl,
+            responseType: 'arrayBuffer' as unknown as string,
+            headers: { Accept: 'application/vnd.android.package-archive' },
+          } as unknown as object);
+          httpStatus = r.status;
+          if (r.status >= 200 && r.status < 300 && r.data) {
+            const buf = r.data as unknown as ArrayBuffer | string;
+            if (buf instanceof ArrayBuffer) blob = new Blob([buf], { type: 'application/vnd.android.package-archive' });
+            else if (typeof buf === 'string') {
+              // base64 string fallback
+              const bin = atob(buf);
+              const u8 = new Uint8Array(bin.length);
+              for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+              blob = new Blob([u8], { type: 'application/vnd.android.package-archive' });
+            }
+          } else if (r.status >= 400) {
+            // WAF / 403 — сразу фолбек в DownloadManager, не показываем ошибку с пробелами
+            throw new Error(`HTTP ${r.status}`);
+          }
         }
+      } catch {
+        // ignore — пробуем дальше
       }
-      const blob = new Blob(chunks as BlobPart[], { type: 'application/vnd.android.package-archive' });
+      // 2) Системный DownloadManager через Capacitor Filesystem downloadFile (если доступен)
+      if (!blob) {
+        try {
+          const fsMod = await import('@capacitor/filesystem');
+          const dl = (fsMod.Filesystem as unknown as { downloadFile?: (o: { url: string; path: string; directory: string }) => Promise<{ path: string; blob?: Blob }> }).downloadFile;
+          if (dl) {
+            const fileName = `mult-table-${latest.tag}.apk`;
+            let dlRes: { path: string; blob?: Blob } | null = null;
+            try {
+              dlRes = await dl({ url: apkUrl, path: fileName, directory: (fsMod.Directory as unknown as Record<string, string>).Cache ?? 'CACHE' });
+            } catch {
+              dlRes = null;
+            }
+            if (dlRes?.blob) {
+              blob = dlRes.blob;
+            } else if (dlRes?.path) {
+              // файл уже на диске — сразу открываем установщик
+              try {
+                const uri = dlRes.path.startsWith('file://') ? dlRes.path : `file://${dlRes.path}`;
+                const { Browser } = await import('@capacitor/browser');
+                await Browser.open({ url: uri });
+                return;
+              } catch {
+                try {
+                  const { Share } = await import('@capacitor/share');
+                  await Share.share({ title: 'Установка обновления', text: `APK ${latest.tag}`, url: dlRes.path, dialogTitle: 'Установить APK' });
+                  return;
+                } catch { /* fallback to fetch */ }
+              }
+            }
+          }
+        } catch { /* ignore */ }
+      }
+      // 3) In-app fetch — последний шанс (в WebView часто CORS/TypeError)
+      if (!blob) {
+        let res: Response;
+        try {
+          res = await fetch(apkUrl, { signal: controller.signal });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        } catch (fetchErr) {
+          // Не ругаем alert с пробелами — молча открываем страницу релиза как было раньше, но без лишних пробелов
+          await openReleasesFallback();
+          const detail = fetchErr instanceof Error ? fetchErr.message : String(fetchErr);
+          // лог без пробелов в URL
+          console.warn('[update] fetch failed', detail, httpStatus);
+          throw new Error('Открыта страница релиза — нажми там Скачать APK.');
+        }
+        const total = Number(res.headers.get('content-length') || 0);
+        const reader = res.body?.getReader();
+        const chunks: Uint8Array[] = [];
+        let received = 0;
+        if (reader) {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            if (value) { chunks.push(value); received += value.length; if (total) setProgress(Math.round((received / total) * 100)); }
+          }
+        } else {
+          const buf = await res.arrayBuffer();
+          chunks.push(new Uint8Array(buf));
+        }
+        const totalLen = chunks.reduce((s, c) => s + c.length, 0);
+        if (totalLen < 1024 * 100) throw new Error('Файл слишком мал — возможно HTML вместо APK');
+        blob = new Blob(chunks as BlobPart[], { type: 'application/vnd.android.package-archive' });
+      }
+      if (!blob) throw new Error('Не удалось загрузить файл');
       const b64 = await new Promise<string>((resolve, reject) => {
         const fr = new FileReader();
         fr.onload = () => {
@@ -91,12 +178,11 @@ export default function UpdateBanner({ current }: { current: string }) {
           resolve(idx >= 0 ? s.slice(idx + 1) : s);
         };
         fr.onerror = () => reject(fr.error);
-        fr.readAsDataURL(blob);
+        fr.readAsDataURL(blob!);
       });
       const fileName = `mult-table-${latest.tag}.apk`;
       const { Filesystem, Directory } = await import('@capacitor/filesystem');
       const saved = await Filesystem.writeFile({ path: fileName, data: b64, directory: Directory.Cache });
-      // try native installer via Browser open (PackageInstaller will handle) — fallback to Share
       try {
         const { Browser } = await import('@capacitor/browser');
         await Browser.open({ url: saved.uri });
@@ -105,8 +191,17 @@ export default function UpdateBanner({ current }: { current: string }) {
         await Share.share({ title: 'Установка обновления', text: `APK ${latest.tag}`, url: saved.uri, dialogTitle: 'Установить APK' });
       }
     } catch (e) {
-      const msg = e instanceof Error && e.name === 'AbortError' ? 'Отменено' : `Ошибка: ${String(e)}`;
-      alert(msg + '\nОткрой страницу релиза: ' + latest.htmlUrl);
+      if (e instanceof Error && e.name === 'AbortError') {
+        alert('Отменено');
+        return;
+      }
+      const msg = e instanceof Error ? e.message : String(e);
+      // Без лишних пробелов в URL — раньше alert резал "https:// github.com/ ... " из-за переноса строки
+      if (msg.includes('Открыта страница релиза')) {
+        // фолбек уже открыл браузер — не спамим вторым alert
+        return;
+      }
+      alert(msg + '\n' + latest.htmlUrl);
     } finally {
       setDownloading(false);
       setProgress(0);
