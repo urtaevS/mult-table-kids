@@ -34,7 +34,7 @@ export default function ResultsScreen({ progress, go, resetProgress, importProgr
   };
 
   return (
-    <main className="relative z-10 mx-auto max-w-md px-4 pb-32 pt-[max(1.25rem,env(safe-area-inset-top))]">
+    <main className="relative z-10 mx-auto max-w-md px-4 pb-32 pt-5">
       <header className="text-center">
         <h1 className="font-display text-2xl font-bold">Мои результаты</h1>
       </header>

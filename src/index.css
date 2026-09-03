@@ -4,9 +4,8 @@
 
 @layer base {
   html { -webkit-tap-highlight-color: transparent; }
-  :root { --safe-top: env(safe-area-inset-top); }
   body {
-    @apply bg-paper font-body text-ink antialiased;
+    @apply bg-paper font-body text-ink antialiased pt-[env(safe-area-inset-top)];
     background-image: radial-gradient(#f1e6cf 1.3px, transparent 1.3px);
     background-size: 24px 24px;
     overscroll-behavior-y: none;

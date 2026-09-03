@@ -40,7 +40,7 @@ export default function ArithmeticScreen({ op, recordAnswer, recordArithmetic, g
 
   if (!cur || !q) {
     return (
-      <main className="relative z-10 mx-auto max-w-md px-4 pb-32 pt-[max(1.5rem,env(safe-area-inset-top))]">
+      <main className="relative z-10 mx-auto max-w-md px-4 pb-32 pt-6">
         <div className="flex items-center gap-2">
           <button type="button" onClick={() => go({ name: 'home' })} className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white shadow-[0_4px_0_#ece3d2] active:translate-y-0.5"><ArrowLeft size={24} strokeWidth={2.8} /></button>
           <h1 className="flex-1 text-center font-display text-xl font-bold">Сложение/Вычитание</h1>
