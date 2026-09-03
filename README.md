@@ -74,7 +74,7 @@ React · TypeScript · Vite · Tailwind CSS · vite-plugin-pwa · Capacitor · P
 
 <p align="center">
   <strong>Если этот проект оказался полезен для вас — вы можете поддержать автора ☕</strong><br>
-  <em>Каждая чашечка кофе помогает создавать новые blueprint'ы и поддерживать существующие.</em>
+  <em>Каждая чашечка кофе помогает развитию и поддержке.</em>
 </p>
 
 <p align="center">
