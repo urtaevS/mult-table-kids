@@ -198,29 +198,45 @@ export default function ResultsScreen({ progress, go, resetProgress, importProgr
         <button
           type="button"
           onClick={async () => {
+            const raw = JSON.stringify(progress, null, 2);
+            const fileName = `mult-table-progress-${new Date().toISOString().slice(0, 10)}.json`;
+            let done = false;
+            // 1) Capacitor Filesystem + Share — работает в APK (WebView) всегда
             try {
-              const raw = JSON.stringify(progress, null, 2);
-              // Capacitor/WebView: try native file save via share intent fallback to download
+              const { Filesystem, Directory } = await import('@capacitor/filesystem');
+              const { Share } = await import('@capacitor/share');
+              const res = await Filesystem.writeFile({ path: fileName, data: raw, directory: Directory.Cache, encoding: 'utf8' as never });
+              await Share.share({ title: 'Прогресс — Учимся играя', text: 'Файл прогресса', url: res.uri, dialogTitle: 'Сохранить прогресс' });
+              done = true;
+            } catch { /* fallback below */ }
+            if (done) return;
+            // 2) Web Share с файлом (PWA/браузер)
+            try {
               const blob = new Blob([raw], { type: 'application/json' });
-              const file = new File([blob], `mult-table-progress-${new Date().toISOString().slice(0,10)}.json`, { type: 'application/json' });
-              const canShare = (navigator as unknown as { canShare?: (d: { files: File[] }) => boolean })?.canShare?.({ files: [file] });
-              if (canShare && navigator.share) {
-                await navigator.share({ files: [file], title: 'Прогресс — Учимся играя' });
+              const file = new File([blob], fileName, { type: 'application/json' });
+              const nav = navigator as unknown as { canShare?: (d: { files: File[] }) => boolean; share?: (d: { files: File[]; title?: string }) => Promise<void> };
+              if (nav.canShare?.({ files: [file] }) && nav.share) {
+                await nav.share({ files: [file], title: 'Прогресс — Учимся играя' });
                 return;
               }
-              const url = URL.createObjectURL(blob);
+            } catch { /* fallback */ }
+            // 3) Скачивание через <a download> (десктоп/PWA)
+            try {
+              const blob2 = new Blob([raw], { type: 'application/json' });
+              const url = URL.createObjectURL(blob2);
               const a = document.createElement('a');
-              a.href = url; a.download = `mult-table-progress-${new Date().toISOString().slice(0,10)}.json`;
+              a.href = url;
+              a.download = fileName;
               document.body.appendChild(a);
               a.click();
               setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);
-            } catch (e) {
-              try {
-                const raw2 = JSON.stringify(progress, null, 2);
-                await navigator.clipboard.writeText(raw2);
-                alert('Прогресс скопирован в буфер обмена ✅');
-              } catch { alert('Не удалось сохранить: ' + String(e)); }
-            }
+              return;
+            } catch { /* fallback */ }
+            // 4) Копирование в буфер как последний шанс
+            try {
+              await navigator.clipboard.writeText(raw);
+              alert('Прогресс скопирован в буфер обмена ✅\nВставь в файл вручную.');
+            } catch (e) { alert('Не удалось сохранить: ' + String(e)); }
           }}
           className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-extrabold text-[#6a4fa0] shadow-[0_3px_0_#e6dfd0] active:translate-y-0.5"
         >
