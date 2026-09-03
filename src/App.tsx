@@ -21,7 +21,7 @@ export default function App() {
   const { progress, recordAnswer, recordArithmetic, recordMissing, recordSequence, markStudied, finishTest, finishTimeAttack, resetProgress, importProgress, toast } = useProgress();
   const [screen, setScreen] = useState<Screen>({ name: 'home' });
 
-  // тихий фон после первого взаимодействия (требование браузеров)
+  // тихий фон после первого взаимодействия (требование браузеров) + фикс статус-бара
   useEffect(() => {
     let started = false;
     const kick = () => {
@@ -32,6 +32,13 @@ export default function App() {
     };
     window.addEventListener('pointerdown', kick, { once: true });
     window.addEventListener('keydown', kick, { once: true });
+    // статус-бар: светлый, не перекрывает WebView
+    void import('@capacitor/status-bar').then(({ StatusBar, Style }) =>
+      StatusBar.setOverlaysWebView({ overlay: false })
+        .then(() => StatusBar.setStyle({ style: Style.Light }))
+        .then(() => StatusBar.setBackgroundColor({ color: '#FFF8EC' }))
+        .catch(() => {})
+    );
     return () => { window.removeEventListener('pointerdown', kick); window.removeEventListener('keydown', kick); };
   }, []);
 

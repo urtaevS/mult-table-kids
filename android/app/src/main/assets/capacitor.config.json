@@ -5,6 +5,11 @@
 	"plugins": {
 		"CapacitorHttp": {
 			"enabled": false
+		},
+		"StatusBar": {
+			"overlaysWebView": false,
+			"style": "LIGHT",
+			"backgroundColor": "#FFF8EC"
 		}
 	},
 	"android": {
