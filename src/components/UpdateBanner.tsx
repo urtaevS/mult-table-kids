@@ -56,8 +56,21 @@ export default function UpdateBanner({ current }: { current: string }) {
     const controller = new AbortController();
     abortRef.current = controller;
     try {
-      const res = await fetch(latest.apkUrl, { signal: controller.signal });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      // WebView/Capacitor fetch к github.com может упасть из-за CORS — сразу пробуем системный браузер/Filesystem как фолбек
+      const trySystemOpen = async (url: string) => {
+        try { const { Browser } = await import('@capacitor/browser'); await Browser.open({ url }); return true; } catch { /* fallback */ }
+        window.open(url, '_blank');
+        return true;
+      };
+      let res: Response;
+      try {
+        res = await fetch(latest.apkUrl, { signal: controller.signal });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      } catch (e) {
+        // Failed to fetch (CORS / TypeError) — открываем страницу релиза, где кнопка Скачать точно сработает
+        await trySystemOpen(latest.htmlUrl);
+        throw new Error('Не удалось скачать напрямую — открыта страница релиза. Нажми там Скачать.');
+      }
       const total = Number(res.headers.get('content-length') || 0);
       const reader = res.body?.getReader();
       const chunks: Uint8Array[] = [];
@@ -102,20 +115,22 @@ export default function UpdateBanner({ current }: { current: string }) {
 
   return (
     <div className="fixed inset-x-0 bottom-[84px] z-40 flex justify-center px-4">
-      <div className="flex w-full max-w-md items-center gap-3 rounded-2xl border-2 border-[#e3d6b8] bg-sun-soft px-3.5 py-3 shadow-[0_6px_0_#e6c98f]">
+      <div className="flex w-full max-w-md items-center gap-2 rounded-2xl border-2 border-[#e3d6b8] bg-sun-soft px-3 py-3 shadow-[0_6px_0_#e6c98f]">
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-sun text-white shadow-sm">⬆️</span>
-        <span className="flex-1 text-sm font-extrabold leading-tight text-[#7a5a00]">
-          Новая версия <span className="font-display">{latest.tag}</span> — обновить?
+        <span className="flex-1 min-w-0 text-sm font-extrabold leading-tight text-[#7a5a00]">
+          <span className="block">Новая версия</span>
+          <span className="font-display">{latest.tag}</span>
         </span>
         {downloading ? (
-          <span className="shrink-0 rounded-full bg-white px-3.5 py-2 text-xs font-extrabold text-ink">{progress ? `${progress}%` : '…'} </span>
+          <span className="shrink-0 rounded-full bg-white px-3 py-2 text-xs font-extrabold text-ink">{progress ? `${progress}%` : '…'} </span>
         ) : (
           <button
             type="button"
             onClick={downloadAndInstall}
-            className="shrink-0 rounded-full bg-ink px-3.5 py-2 text-xs font-extrabold text-white shadow-[0_3px_0_#2a2550] active:translate-y-0.5"
+            className="shrink-0 rounded-full bg-ink px-3 py-2 text-xs font-extrabold leading-none text-white shadow-[0_3px_0_#2a2550] active:translate-y-0.5"
           >
-            Скачать и установить
+            <span className="block">Скачать</span>
+            <span className="block text-[10px] opacity-80">и установить</span>
           </button>
         )}
         <button type="button" onClick={dismiss} aria-label="Закрыть" className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/60 text-[#8d84a3]">✕</button>

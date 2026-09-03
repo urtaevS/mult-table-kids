@@ -37,18 +37,16 @@ android {
         }
     }
     buildTypes {
+        // один APK для всех установок — debug тоже подписываем тем же release ключем,
+        // иначе Android считает их разными пакетами и требует удалить старое
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            if (project.hasProperty('signingConfigs') && signingConfigs.hasProperty('release')) {
-                def ksFile = file('release.keystore')
-                def ksB64 = System.getenv('ANDROID_KEYSTORE_BASE64')
-                if ((ksFile.exists() || ksB64) && System.getenv('KEYSTORE_PASSWORD')) {
-                    signingConfig signingConfigs.release
-                }
-            }
+            signingConfig signingConfigs.release
         }
     }
 }
