@@ -44,11 +44,7 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            initWith buildTypes.debug
-            // если ключ есть — подпишем debug тем же, иначе оставим debug-ключ (симулятор/локально)
-            if (file('release.keystore').exists() || System.getenv('ANDROID_KEYSTORE_BASE64')) {
-                signingConfig signingConfigs.release
-            }
+            signingConfig signingConfigs.release
         }
         release {
             minifyEnabled false

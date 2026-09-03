@@ -68,7 +68,7 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
-      - name: Build Debug APK
+      - name: Build Release APK (signed — updates install over previous)
         working-directory: android
         env:
           JAVA_HOME: ${{ env.JAVA_HOME }}
@@ -78,17 +78,20 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           echo "JAVA_HOME=$JAVA_HOME"; java -version
-          ./gradlew assembleDebug -PversionCode=${VERSION_CODE:-4} -PversionName=${VERSION_NAME:-1.0.3} --no-daemon 2>&1 | tee /tmp/gradle.log
+          # Всегда release-сборка с подписью release.keystore — иначе Android видит другой ключ и требует удалить
+          ./gradlew assembleRelease -PversionCode=${VERSION_CODE:-4} -PversionName=${VERSION_NAME:-1.0.3} --no-daemon 2>&1 | tee /tmp/gradle.log
           EXIT=${PIPESTATUS[0]}
           echo "GRADLE_EXIT=$EXIT" >> "$GITHUB_ENV"
+          # нормализуем имя для релиза (multitab.apk) — всегда один файл
+          cp android/app/build/outputs/apk/release/multitab-release.apk android/app/build/outputs/apk/release/multitab.apk 2>/dev/null || true
           exit $EXIT
 
-      - name: Upload Debug APK
+      - name: Upload Release APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: multitab-apk
-          path: android/app/build/outputs/apk/debug/*.apk
+          path: android/app/build/outputs/apk/release/*.apk
           if-no-files-found: error
 
       - name: Generate release notes
@@ -107,7 +110,7 @@ jobs:
             echo "$LOG" | sed 's/^/- /' | sed 's/^- - /- /' | sed 's/^-- /- /'
             echo ""
             echo "### Скачать"
-            echo "- **Android APK:** \`app-debug.apk\` ниже — установка поверх `v1.0.4+` сохраняет прогресс"
+            echo "- **Android APK:** \`multitab.apk\` ниже — установка поверх `v1.0.4+` сохраняет прогресс"
             echo "- **Web/PWA:** https://urtaevs.github.io/mult-table-kids/"
             echo ""
             echo "> Не удаляй приложение перед обновлением — только «Обновить» поверх."
@@ -123,7 +126,7 @@ jobs:
         with:
           name: ${{ github.ref_name }}
           body: ${{ steps.notes.outputs.notes }}
-          files: android/app/build/outputs/apk/debug/*.apk
+          files: android/app/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
