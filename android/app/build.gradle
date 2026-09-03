@@ -44,12 +44,15 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.release
+            // подписываем release-ключом только если он реально есть (иначе оставляем debug-подпись для CI)
+            def hasKey = file('release.keystore').exists() || System.getenv('ANDROID_KEYSTORE_BASE64')
+            if (hasKey) signingConfig signingConfigs.release
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            def hasKey = file('release.keystore').exists() || System.getenv('ANDROID_KEYSTORE_BASE64')
+            if (hasKey) signingConfig signingConfigs.release
         }
     }
 }

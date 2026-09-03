@@ -78,20 +78,21 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           echo "JAVA_HOME=$JAVA_HOME"; java -version
-          # Всегда release-сборка с подписью release.keystore — иначе Android видит другой ключ и требует удалить
-          ./gradlew assembleRelease -PversionCode=${VERSION_CODE:-4} -PversionName=${VERSION_NAME:-1.0.3} --no-daemon 2>&1 | tee /tmp/gradle.log
+          # release подпись есть только если загружены секреты (теги), иначе debug (ветка main)
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then VARIANT="assembleDebug"; else VARIANT="assembleRelease"; fi
+          ./gradlew $VARIANT -PversionCode=${VERSION_CODE:-4} -PversionName=${VERSION_NAME:-1.0.3} --no-daemon 2>&1 | tee /tmp/gradle.log
           EXIT=${PIPESTATUS[0]}
           echo "GRADLE_EXIT=$EXIT" >> "$GITHUB_ENV"
           # нормализуем имя для релиза (multitab.apk) — всегда один файл
           cp android/app/build/outputs/apk/release/multitab-release.apk android/app/build/outputs/apk/release/multitab.apk 2>/dev/null || true
           exit $EXIT
 
-      - name: Upload Release APK
+      - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: multitab-apk
-          path: android/app/build/outputs/apk/release/*.apk
+          path: android/app/build/outputs/apk/**/*.apk
           if-no-files-found: error
 
       - name: Generate release notes
@@ -126,7 +127,7 @@ jobs:
         with:
           name: ${{ github.ref_name }}
           body: ${{ steps.notes.outputs.notes }}
-          files: android/app/build/outputs/apk/release/*.apk
+          files: android/app/build/outputs/apk/**/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
