@@ -1,7 +1,7 @@
 {
   "name": "mult-table-kids",
   "private": true,
-  "version": "1.3.8",
+  "version": "1.3.9",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
+    "@capacitor/browser": "^8.0.4",
     "@capacitor/cli": "^8.5.0",
     "@capacitor/core": "^8.5.0",
     "@capacitor/filesystem": "^8.1.3",
